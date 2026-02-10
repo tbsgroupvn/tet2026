@@ -22,6 +22,7 @@ import LogisticsChina from './games/LogisticsChina';
 import OanTuTi from './games/OanTuTi';
 import DoanSo from './games/DoanSo';
 import XocDia from './games/XocDia';
+import OanTuTiPVP from './games/OanTuTiPVP';
 import AdminDashboard from './components/AdminDashboard';
 import MouseTrail from './components/MouseTrail';
 import SoundControl from './components/SoundControl';
@@ -126,6 +127,7 @@ export default function App() {
           {currentGame === 'oan-tu-ti' && <OanTuTi {...gameProps} />}
           {currentGame === 'doan-so' && <DoanSo {...gameProps} />}
           {currentGame === 'xoc-dia' && <XocDia {...gameProps} />}
+          {currentGame === 'oan-tu-ti-pvp' && <OanTuTiPVP {...gameProps} />}
         </main>
       </div>
     );
@@ -273,6 +275,13 @@ export default function App() {
                 description="Đoán Chẵn hay Lẻ — trò chơi dân gian kinh điển ngày Tết!"
                 color="#d35400"
                 onClick={() => selectGame('xoc-dia')}
+              />
+              <GameCard
+                emoji="🤜🤛"
+                title="Oẳn Tù Tì 2 Người"
+                description="Đấu trực tiếp với đồng nghiệp! Tạo phòng, chia sẻ mã, Best of 5!"
+                color="#e91e63"
+                onClick={() => selectGame('oan-tu-ti-pvp')}
               />
             </div>
 

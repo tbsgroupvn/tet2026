@@ -351,6 +351,177 @@ app.get('/api/admin/stats', adminAuth, (_req, res) => {
   }
 });
 
+// ============ PvP Oẳn Tù Tì (Real-time 2-player) ============
+const pvpRooms = new Map();
+
+// Cleanup stale rooms every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [code, room] of pvpRooms) {
+    if (now - room.createdAt > 30 * 60 * 1000) pvpRooms.delete(code);
+  }
+}, 5 * 60 * 1000);
+
+function generateRoomCode() {
+  let code;
+  do {
+    code = String(1000 + Math.floor(Math.random() * 9000));
+  } while (pvpRooms.has(code));
+  return code;
+}
+
+function getWinner(p1, p2) {
+  if (p1 === p2) return 'draw';
+  if (
+    (p1 === 'keo' && p2 === 'bao') ||
+    (p1 === 'bua' && p2 === 'keo') ||
+    (p1 === 'bao' && p2 === 'bua')
+  ) return 'p1';
+  return 'p2';
+}
+
+function sanitizeRoom(room, playerId) {
+  const myIndex = room.players.findIndex(p => p.id === playerId);
+  const opponentIndex = myIndex === 0 ? 1 : 0;
+
+  return {
+    code: room.code,
+    status: room.status,
+    round: room.round,
+    scores: room.scores,
+    players: room.players.map((p, i) => ({
+      id: p.id,
+      name: p.name,
+      hasChosen: !!p.choice,
+      // Only reveal choices when both have chosen (reveal/nextRound/finished)
+      choice: (room.status === 'reveal' || room.status === 'finished') ? p.choice : (i === myIndex ? p.choice : null),
+    })),
+    myIndex,
+    lastResult: room.lastResult,
+    winner: room.winner,
+    createdAt: room.createdAt,
+  };
+}
+
+// Create room
+app.post('/api/pvp/create', (req, res) => {
+  const { playerId, playerName } = req.body;
+  if (!playerId || !playerName) return res.status(400).json({ error: 'Thiếu thông tin' });
+
+  const code = generateRoomCode();
+  const room = {
+    code,
+    players: [{ id: playerId, name: playerName, choice: null }],
+    scores: [0, 0],
+    round: 1,
+    status: 'waiting', // waiting, choosing, reveal, finished
+    lastResult: null,
+    winner: null,
+    createdAt: Date.now(),
+  };
+  pvpRooms.set(code, room);
+  res.json({ code, room: sanitizeRoom(room, playerId) });
+});
+
+// Join room
+app.post('/api/pvp/join', (req, res) => {
+  const { code, playerId, playerName } = req.body;
+  if (!code || !playerId || !playerName) return res.status(400).json({ error: 'Thiếu thông tin' });
+
+  const room = pvpRooms.get(code);
+  if (!room) return res.status(404).json({ error: 'Không tìm thấy phòng' });
+  if (room.status !== 'waiting') return res.status(400).json({ error: 'Phòng đã bắt đầu' });
+  if (room.players.length >= 2) return res.status(400).json({ error: 'Phòng đã đầy' });
+  if (room.players[0].id === playerId) return res.status(400).json({ error: 'Không thể tự chơi với chính mình' });
+
+  room.players.push({ id: playerId, name: playerName, choice: null });
+  room.status = 'choosing';
+  res.json({ room: sanitizeRoom(room, playerId) });
+});
+
+// Submit move
+app.post('/api/pvp/move', (req, res) => {
+  const { code, playerId, choice } = req.body;
+  if (!code || !playerId || !choice) return res.status(400).json({ error: 'Thiếu thông tin' });
+  if (!['keo', 'bua', 'bao'].includes(choice)) return res.status(400).json({ error: 'Lựa chọn không hợp lệ' });
+
+  const room = pvpRooms.get(code);
+  if (!room) return res.status(404).json({ error: 'Không tìm thấy phòng' });
+  if (room.status !== 'choosing') return res.status(400).json({ error: 'Chưa đến lượt chọn' });
+
+  const playerIndex = room.players.findIndex(p => p.id === playerId);
+  if (playerIndex === -1) return res.status(403).json({ error: 'Bạn không trong phòng này' });
+  if (room.players[playerIndex].choice) return res.status(400).json({ error: 'Bạn đã chọn rồi' });
+
+  room.players[playerIndex].choice = choice;
+
+  // Check if both players have chosen
+  if (room.players[0].choice && room.players[1].choice) {
+    const result = getWinner(room.players[0].choice, room.players[1].choice);
+    if (result === 'p1') room.scores[0]++;
+    else if (result === 'p2') room.scores[1]++;
+
+    room.lastResult = {
+      choices: [room.players[0].choice, room.players[1].choice],
+      result, // 'p1', 'p2', 'draw'
+      round: room.round,
+    };
+
+    // Check if match is over (best of 5)
+    if (room.scores[0] >= 3 || room.scores[1] >= 3) {
+      room.status = 'finished';
+      room.winner = room.scores[0] >= 3 ? 0 : 1;
+    } else {
+      room.status = 'reveal';
+      // Auto-advance to next round after 3 seconds
+      setTimeout(() => {
+        if (pvpRooms.has(code) && room.status === 'reveal') {
+          room.round++;
+          room.players[0].choice = null;
+          room.players[1].choice = null;
+          room.status = 'choosing';
+        }
+      }, 3500);
+    }
+  }
+
+  res.json({ room: sanitizeRoom(room, playerId) });
+});
+
+// Get room state (polling)
+app.get('/api/pvp/room/:code', (req, res) => {
+  const { code } = req.params;
+  const playerId = req.query.playerId;
+  if (!playerId) return res.status(400).json({ error: 'Thiếu playerId' });
+
+  const room = pvpRooms.get(code);
+  if (!room) return res.status(404).json({ error: 'Không tìm thấy phòng' });
+
+  const playerIndex = room.players.findIndex(p => p.id === playerId);
+  if (playerIndex === -1) return res.status(403).json({ error: 'Bạn không trong phòng này' });
+
+  res.json({ room: sanitizeRoom(room, playerId) });
+});
+
+// Leave room
+app.post('/api/pvp/leave', (req, res) => {
+  const { code, playerId } = req.body;
+  const room = pvpRooms.get(code);
+  if (room) {
+    // If match not finished, the leaver forfeits
+    if (room.status !== 'finished' && room.players.length === 2) {
+      const leaverIndex = room.players.findIndex(p => p.id === playerId);
+      if (leaverIndex !== -1) {
+        room.status = 'finished';
+        room.winner = leaverIndex === 0 ? 1 : 0;
+      }
+    } else {
+      pvpRooms.delete(code);
+    }
+  }
+  res.json({ success: true });
+});
+
 // SPA fallback - serve index.html for all non-API routes
 app.use((_req, res) => {
   res.sendFile(join(__dirname, '..', 'dist', 'index.html'));
