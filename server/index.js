@@ -149,7 +149,7 @@ app.post('/api/rewards', (req, res) => {
       return res.status(400).json({ error: 'Thiếu thông tin đổi thưởng' });
     }
 
-    stmts.addRewardRedeemed.run({
+    const result = stmts.addRewardRedeemed.run({
       playerId,
       rewardName,
       coinCost: coinCost || 0,
@@ -163,7 +163,9 @@ app.post('/api/rewards', (req, res) => {
         .run(totalCoins, playerId);
     }
 
-    res.json({ success: true });
+    // Return the created redemption record
+    const redemption = stmts.getRedemptionById.get(result.lastInsertRowid);
+    res.json({ success: true, redemption });
   } catch (err) {
     console.error('Error recording reward:', err);
     res.status(500).json({ error: 'Lỗi server' });
@@ -238,6 +240,86 @@ app.get('/api/stats', (_req, res) => {
     res.json({ ...stats, departments });
   } catch (err) {
     console.error('Error getting stats:', err);
+    res.status(500).json({ error: 'Lỗi server' });
+  }
+});
+
+// ============ Admin API Routes ============
+const ADMIN_CODE = process.env.ADMIN_CODE || 'TBSADMIN2026';
+
+// Verify admin code
+app.post('/api/admin/verify', (req, res) => {
+  const { code } = req.body;
+  if (!code) {
+    return res.status(400).json({ error: 'Thiếu mã admin' });
+  }
+  if (code.trim() === ADMIN_CODE) {
+    const token = Buffer.from(`tbs-tet2026-admin-${ADMIN_CODE}-verified`).toString('base64');
+    return res.json({ success: true, token });
+  }
+  return res.status(401).json({ error: 'Mã admin không đúng' });
+});
+
+// Admin middleware
+function adminAuth(req, res, next) {
+  const adminToken = req.headers['x-admin-token'];
+  const expectedToken = Buffer.from(`tbs-tet2026-admin-${ADMIN_CODE}-verified`).toString('base64');
+  if (adminToken !== expectedToken) {
+    return res.status(403).json({ error: 'Không có quyền admin' });
+  }
+  next();
+}
+
+// Get all redemptions (admin)
+app.get('/api/admin/redemptions', adminAuth, (_req, res) => {
+  try {
+    const redemptions = stmts.getAllRedemptions.all();
+    res.json(redemptions);
+  } catch (err) {
+    console.error('Error getting all redemptions:', err);
+    res.status(500).json({ error: 'Lỗi server' });
+  }
+});
+
+// Update redemption status (admin)
+app.put('/api/admin/redemptions/:id', adminAuth, (req, res) => {
+  try {
+    const { status, adminNotes } = req.body;
+    const id = parseInt(req.params.id);
+    if (!status || !['pending', 'approved', 'paid', 'rejected'].includes(status)) {
+      return res.status(400).json({ error: 'Trạng thái không hợp lệ' });
+    }
+
+    stmts.updateRedemptionStatus.run({
+      id,
+      status,
+      adminNotes: adminNotes || '',
+    });
+
+    const updated = stmts.getRedemptionById.get(id);
+    res.json({ success: true, redemption: updated });
+  } catch (err) {
+    console.error('Error updating redemption:', err);
+    res.status(500).json({ error: 'Lỗi server' });
+  }
+});
+
+// Get admin stats summary
+app.get('/api/admin/stats', adminAuth, (_req, res) => {
+  try {
+    const stats = stmts.getStats.get();
+    const departments = stmts.getDepartmentStats.all();
+    const pendingCount = db.prepare("SELECT COUNT(*) as count FROM rewards_redeemed WHERE status = 'pending'").get();
+    const totalRedeemed = db.prepare("SELECT COUNT(*) as count, SUM(coin_cost) as total_cost FROM rewards_redeemed").get();
+    res.json({
+      ...stats,
+      departments,
+      pending_redemptions: pendingCount.count,
+      total_redemptions: totalRedeemed.count,
+      total_redeemed_cost: totalRedeemed.total_cost || 0,
+    });
+  } catch (err) {
+    console.error('Error getting admin stats:', err);
     res.status(500).json({ error: 'Lỗi server' });
   }
 });

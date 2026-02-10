@@ -17,6 +17,7 @@ import BaiCao from './games/BaiCao';
 import XinXam from './games/XinXam';
 import CungOngBa from './games/CungOngBa';
 import DoVuiTBS from './games/DoVuiTBS';
+import AdminDashboard from './components/AdminDashboard';
 import { TBS_CORE_VALUES, getRandomCultureTip } from './utils/tbsQuiz';
 import './App.css';
 
@@ -26,10 +27,20 @@ export default function App() {
   const [player, setPlayer] = useState<Player | null>(null);
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [currentGame, setCurrentGame] = useState<GameType | null>(null);
+  const [showAdmin, setShowAdmin] = useState(false);
 
   useEffect(() => {
     const saved = getPlayer();
     if (saved) setPlayer(saved);
+    // Check for admin URL hash
+    if (window.location.hash === '#admin') {
+      setShowAdmin(true);
+    }
+    const handleHash = () => {
+      setShowAdmin(window.location.hash === '#admin');
+    };
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
   const handleLogin = (name: string, department: string) => {
@@ -40,6 +51,21 @@ export default function App() {
   const handlePlayerUpdate = (updated: Player) => {
     setPlayer(updated);
   };
+
+  // Admin dashboard (accessible via /#admin)
+  if (showAdmin) {
+    return (
+      <div className="app">
+        <AdminDashboard />
+        <button
+          className="admin-exit-btn"
+          onClick={() => { window.location.hash = ''; setShowAdmin(false); }}
+        >
+          ← Về Trang Chính
+        </button>
+      </div>
+    );
+  }
 
   if (!player) {
     return (

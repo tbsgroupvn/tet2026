@@ -2488,12 +2488,664 @@ button:disabled {
   color: rgba(255, 255, 255, 0.5);
 }
 
+/* ============ Payment Info Note ============ */
+.payment-info-note {
+  background: rgba(39, 174, 96, 0.15);
+  border: 1px solid rgba(39, 174, 96, 0.3);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+  color: #a8e6cf;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* ============ Receipt Modal ============ */
+.receipt-modal {
+  background: linear-gradient(145deg, #0a2e1a, #1a0a0a);
+  border: 2px solid var(--gold);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 0 50px rgba(255, 215, 0, 0.25);
+}
+
+.receipt-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.receipt-check {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.receipt-header h3 {
+  color: var(--gold);
+  font-size: 1.4rem;
+}
+
+.receipt-body {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.receipt-id {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px dashed rgba(255, 215, 0, 0.2);
+}
+
+.receipt-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px dashed rgba(255, 215, 0, 0.2);
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.receipt-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.receipt-value {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.receipt-value-small {
+  font-size: 0.8rem;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.receipt-status-pending {
+  color: #f39c12;
+}
+
+.receipt-process {
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.receipt-process h4 {
+  color: var(--gold);
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+.receipt-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.receipt-step {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.receipt-step.active {
+  background: rgba(39, 174, 96, 0.15);
+  color: #2ecc71;
+}
+
+.receipt-step-icon {
+  font-size: 1rem;
+}
+
+.receipt-timeline {
+  color: #ffcdd2;
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+}
+
+.receipt-contact {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+}
+
+.receipt-close-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #0a2e1a;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.receipt-close-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
+}
+
+/* ============ Reward Process Banner ============ */
+.reward-process-banner {
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.15), rgba(255, 215, 0, 0.08));
+  border: 1px solid rgba(39, 174, 96, 0.3);
+  border-radius: 14px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.reward-process-banner h4 {
+  color: var(--gold);
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  text-align: center;
+}
+
+.process-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.process-step {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.process-step-num {
+  width: 24px;
+  height: 24px;
+  background: var(--gold);
+  color: #0a2e1a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.process-step-text {
+  font-size: 0.8rem;
+  color: #fff;
+}
+
+.process-step-arrow {
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+.process-note {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* ============ Redemption Progress Tracker ============ */
+.redemption-progress {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  margin: 0.6rem 0;
+  padding: 0.5rem 0;
+}
+
+.redemption-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.progress-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s;
+}
+
+.redemption-progress-step.done .progress-dot {
+  background: #2ecc71;
+  border-color: #27ae60;
+  box-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
+}
+
+.redemption-progress-step.rejected .progress-dot {
+  background: #e74c3c;
+  border-color: #c0392b;
+}
+
+.progress-label {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+.redemption-progress-step.done .progress-label {
+  color: #2ecc71;
+}
+
+.redemption-progress-step.rejected .progress-label {
+  color: #e74c3c;
+}
+
+.redemption-progress-line {
+  width: 30px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+.redemption-progress-line.done {
+  background: #2ecc71;
+}
+
+.redemption-progress-line.rejected {
+  background: #e74c3c;
+}
+
 @media (max-width: 480px) {
   .payment-modal {
     padding: 1.5rem;
   }
   .payment-method-tabs {
     flex-direction: column;
+  }
+  .receipt-modal {
+    padding: 1.5rem;
+  }
+  .process-steps {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .process-step-arrow {
+    transform: rotate(90deg);
+  }
+}
+
+/* ============ Admin Dashboard ============ */
+.admin-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 2rem;
+}
+
+.admin-login-card {
+  background: linear-gradient(145deg, #2d0808, #1a0a0a);
+  border: 2px solid var(--gold);
+  border-radius: 20px;
+  padding: 2.5rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+}
+
+.admin-login-card h2 {
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.admin-login-card p {
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.admin-code-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 1.1rem;
+  text-align: center;
+  letter-spacing: 2px;
+  outline: none;
+  margin-bottom: 1rem;
+  transition: border-color 0.3s;
+}
+
+.admin-code-input:focus {
+  border-color: var(--gold);
+}
+
+.admin-auth-error {
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.5);
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  color: #ff6b6b;
+  font-size: 0.85rem;
+}
+
+.admin-login-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #8b0000;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.admin-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
+}
+
+.admin-dashboard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-header h2 {
+  color: var(--gold);
+  font-size: 1.2rem;
+}
+
+.admin-refresh-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 10px;
+  color: var(--gold);
+  font-size: 0.85rem;
+  transition: all 0.3s;
+}
+
+.admin-refresh-btn:hover {
+  background: rgba(255, 215, 0, 0.25);
+}
+
+.admin-exit-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.7rem 1.5rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.9rem;
+  z-index: 100;
+  transition: all 0.3s;
+}
+
+.admin-exit-btn:hover {
+  background: rgba(0, 0, 0, 0.95);
+  border-color: var(--gold);
+}
+
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-stat-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.admin-stat-card.pending {
+  border-color: #f39c12;
+  background: rgba(243, 156, 18, 0.1);
+}
+
+.admin-stat-num {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.admin-stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.3rem;
+}
+
+.admin-filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-filter-btn {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  transition: all 0.3s;
+}
+
+.admin-filter-btn.active {
+  border-color: var(--gold);
+  background: rgba(255, 215, 0, 0.1);
+  color: var(--gold);
+}
+
+.admin-filter-btn:hover:not(.active) {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.admin-redemption-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-empty {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 3rem;
+  font-size: 0.95rem;
+}
+
+.admin-redemption-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: 14px;
+  padding: 1.2rem;
+  transition: border-color 0.3s;
+}
+
+.admin-redemption-card:hover {
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.admin-redemption-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.admin-redemption-id {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.admin-redemption-status {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.admin-redemption-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
+}
+
+.admin-redemption-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.admin-label {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  min-width: 110px;
+}
+
+.admin-value {
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.admin-value-highlight {
+  color: var(--gold);
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.admin-redemption-actions {
+  border-top: 1px solid rgba(255, 215, 0, 0.1);
+  padding-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-notes-input {
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.admin-notes-input:focus {
+  border-color: var(--gold);
+}
+
+.admin-action-btns {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.admin-btn.approve {
+  background: rgba(39, 174, 96, 0.2);
+  border: 1px solid #27ae60;
+  color: #2ecc71;
+}
+
+.admin-btn.approve:hover {
+  background: rgba(39, 174, 96, 0.35);
+}
+
+.admin-btn.reject {
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid #e74c3c;
+  color: #ff6b6b;
+}
+
+.admin-btn.reject:hover {
+  background: rgba(231, 76, 60, 0.35);
+}
+
+.admin-btn.paid {
+  background: rgba(46, 204, 113, 0.2);
+  border: 1px solid #2ecc71;
+  color: #2ecc71;
+}
+
+.admin-btn.paid:hover {
+  background: rgba(46, 204, 113, 0.35);
+}
+
+@media (max-width: 600px) {
+  .admin-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admin-label {
+    min-width: 90px;
   }
 }
 
