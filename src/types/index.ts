@@ -23,7 +23,7 @@ export interface GameResult {
   details: string;
 }
 
-export type GameType = 'lac-li-xi' | 'bau-cua' | 'vong-quay';
+export type GameType = 'lac-li-xi' | 'bau-cua' | 'vong-quay' | 'boc-que' | 'tai-xiu' | 'bai-cao' | 'xin-xam' | 'cung-ong-ba';
 
 export interface BauCuaSymbol {
   name: string;

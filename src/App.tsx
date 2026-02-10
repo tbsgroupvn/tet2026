@@ -11,6 +11,11 @@ import Leaderboard from './components/Leaderboard';
 import LacLiXi from './games/LacLiXi';
 import BauCua from './games/BauCua';
 import VongQuay from './games/VongQuay';
+import BocQue from './games/BocQue';
+import TaiXiu from './games/TaiXiu';
+import BaiCao from './games/BaiCao';
+import XinXam from './games/XinXam';
+import CungOngBa from './games/CungOngBa';
 import './App.css';
 
 type Page = 'home' | 'rewards' | 'leaderboard';
@@ -59,6 +64,11 @@ export default function App() {
           {currentGame === 'lac-li-xi' && <LacLiXi {...gameProps} />}
           {currentGame === 'bau-cua' && <BauCua {...gameProps} />}
           {currentGame === 'vong-quay' && <VongQuay {...gameProps} />}
+          {currentGame === 'boc-que' && <BocQue {...gameProps} />}
+          {currentGame === 'tai-xiu' && <TaiXiu {...gameProps} />}
+          {currentGame === 'bai-cao' && <BaiCao {...gameProps} />}
+          {currentGame === 'xin-xam' && <XinXam {...gameProps} />}
+          {currentGame === 'cung-ong-ba' && <CungOngBa {...gameProps} />}
         </main>
       </div>
     );
@@ -123,6 +133,41 @@ export default function App() {
                 description="Quay vòng quay may mắn! Cơ hội trúng lớn!"
                 color="#e91e63"
                 onClick={() => setCurrentGame('vong-quay')}
+              />
+              <GameCard
+                emoji="🎲"
+                title="Tài Xỉu"
+                description="Đoán tổng 3 xúc xắc Tài hay Xỉu! Đoán đúng thắng gấp đôi!"
+                color="#9b59b6"
+                onClick={() => setCurrentGame('tai-xiu')}
+              />
+              <GameCard
+                emoji="🃏"
+                title="Bài Cào"
+                description="Chia 3 lá bài, so điểm với nhà cái! Được 8-9 nút thắng đậm!"
+                color="#2ecc71"
+                onClick={() => setCurrentGame('bai-cao')}
+              />
+              <GameCard
+                emoji="🔮"
+                title="Bốc Quẻ Đầu Năm"
+                description="Bốc quẻ xem vận mệnh năm mới! Lời tiên tri và xu thưởng!"
+                color="#e67e22"
+                onClick={() => setCurrentGame('boc-que')}
+              />
+              <GameCard
+                emoji="🛕"
+                title="Xin Xăm Chùa"
+                description="Lắc ống xăm đầu năm! Thẻ xăm kèm thơ và lời giải!"
+                color="#1abc9c"
+                onClick={() => setCurrentGame('xin-xam')}
+              />
+              <GameCard
+                emoji="🪷"
+                title="Cúng Ông Bà"
+                description="Lật tìm cặp lễ vật bày mâm cỗ cúng Tổ Tiên! Trí nhớ tốt = nhiều xu!"
+                color="#c0392b"
+                onClick={() => setCurrentGame('cung-ong-ba')}
               />
             </div>
           </div>

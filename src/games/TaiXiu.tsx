@@ -1,0 +1,148 @@
+import { useState, useCallback } from 'react';
+import type { Player } from '../types';
+import { addCoins } from '../utils/storage';
+import { getGreeting } from '../utils/greetings';
+
+interface TaiXiuProps {
+  player: Player;
+  onUpdate: (player: Player) => void;
+  onBack: () => void;
+}
+
+const BET_OPTIONS = [10, 20, 50, 100];
+
+export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
+  const [bet, setBet] = useState(10);
+  const [choice, setChoice] = useState<'tai' | 'xiu' | null>(null);
+  const [rolling, setRolling] = useState(false);
+  const [dice, setDice] = useState<number[]>([]);
+  const [result, setResult] = useState<{ won: boolean; total: number; payout: number } | null>(null);
+  const [greeting, setGreeting] = useState('');
+
+  const roll = useCallback(() => {
+    if (rolling || !choice || bet > player.totalCoins) return;
+    setRolling(true);
+    setResult(null);
+    setGreeting('');
+
+    let count = 0;
+    const interval = setInterval(() => {
+      setDice([
+        Math.ceil(Math.random() * 6),
+        Math.ceil(Math.random() * 6),
+        Math.ceil(Math.random() * 6),
+      ]);
+      count++;
+      if (count > 15) {
+        clearInterval(interval);
+        const final = [
+          Math.ceil(Math.random() * 6),
+          Math.ceil(Math.random() * 6),
+          Math.ceil(Math.random() * 6),
+        ];
+        setDice(final);
+        const total = final.reduce((s, v) => s + v, 0);
+        const isTai = total >= 11;
+        const won = (choice === 'tai' && isTai) || (choice === 'xiu' && !isTai);
+
+        if (won) {
+          setGreeting(getGreeting(player.department));
+          const updated = addCoins(player, bet, 'Tài Xỉu', `${choice === 'tai' ? 'Tài' : 'Xỉu'} - Tổng ${total} - Thắng +${bet}`);
+          onUpdate(updated);
+          setResult({ won: true, total, payout: bet });
+        } else {
+          const updated = addCoins(player, -bet, 'Tài Xỉu', `${choice === 'tai' ? 'Tài' : 'Xỉu'} - Tổng ${total} - Thua -${bet}`);
+          onUpdate(updated);
+          setResult({ won: false, total, payout: -bet });
+        }
+        setRolling(false);
+      }
+    }, 100);
+  }, [rolling, choice, bet, player, onUpdate]);
+
+  const getDiceFace = (n: number) => {
+    const faces = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+    return faces[n] || '⚀';
+  };
+
+  return (
+    <div className="game-page tai-xiu">
+      <button className="back-btn" onClick={onBack}>← Quay Lại</button>
+      <div className="game-content">
+        <h2>🎲 Tài Xỉu</h2>
+        <p className="game-instruction">
+          Đoán tổng 3 xúc xắc: <strong>Tài</strong> (11-18) hoặc <strong>Xỉu</strong> (3-10). Đoán đúng thắng gấp đôi!
+        </p>
+
+        <div className="tx-dice-area">
+          {dice.length > 0 ? dice.map((d, i) => (
+            <div key={i} className={`tx-die ${rolling ? 'rolling' : 'landed'}`}>
+              <span className="tx-die-face">{getDiceFace(d)}</span>
+              <span className="tx-die-num">{d}</span>
+            </div>
+          )) : (
+            <>
+              <div className="tx-die empty">❓</div>
+              <div className="tx-die empty">❓</div>
+              <div className="tx-die empty">❓</div>
+            </>
+          )}
+        </div>
+
+        {result && (
+          <div className={`tx-result ${result.won ? 'win' : 'lose'}`}>
+            <span className="tx-result-icon">{result.won ? '🎉' : '😅'}</span>
+            <span>Tổng: <strong>{result.total}</strong> ({result.total >= 11 ? 'TÀI' : 'XỈU'}) — {result.won ? `Thắng +${result.payout} xu` : `Thua ${result.payout} xu`}</span>
+          </div>
+        )}
+
+        {greeting && (
+          <div className="greeting-box">
+            <p className="greeting-text">🌸 {greeting}</p>
+          </div>
+        )}
+
+        <div className="tx-choice">
+          <button
+            className={`tx-choice-btn tx-xiu ${choice === 'xiu' ? 'selected' : ''}`}
+            onClick={() => !rolling && setChoice('xiu')}
+            disabled={rolling}
+          >
+            <span className="tx-choice-label">XỈU</span>
+            <span className="tx-choice-range">3 - 10</span>
+          </button>
+          <button
+            className={`tx-choice-btn tx-tai ${choice === 'tai' ? 'selected' : ''}`}
+            onClick={() => !rolling && setChoice('tai')}
+            disabled={rolling}
+          >
+            <span className="tx-choice-label">TÀI</span>
+            <span className="tx-choice-range">11 - 18</span>
+          </button>
+        </div>
+
+        <div className="tx-bet">
+          <span>Mức cược:</span>
+          {BET_OPTIONS.map((amt) => (
+            <button
+              key={amt}
+              className={`bet-option ${bet === amt ? 'active' : ''}`}
+              onClick={() => !rolling && setBet(amt)}
+              disabled={rolling || amt > player.totalCoins}
+            >
+              🪙 {amt}
+            </button>
+          ))}
+        </div>
+
+        <button
+          className="tx-roll-btn"
+          onClick={roll}
+          disabled={rolling || !choice || bet > player.totalCoins}
+        >
+          {rolling ? '🎲 Đang lắc...' : '🎲 Lắc Xúc Xắc!'}
+        </button>
+      </div>
+    </div>
+  );
+}
