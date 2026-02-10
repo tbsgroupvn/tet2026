@@ -1,4 +1,5 @@
 import type { Player, GameResult } from '../types';
+import { syncPlayerToServer, registerPlayer, recordGameResult } from './api';
 
 const PLAYER_KEY = 'tbs_tet2026_player';
 const HISTORY_KEY = 'tbs_tet2026_history';
@@ -12,6 +13,15 @@ export function getPlayer(): Player | null {
 export function savePlayer(player: Player): void {
   localStorage.setItem(PLAYER_KEY, JSON.stringify(player));
   updateLeaderboard(player);
+
+  // Sync to server (fire and forget)
+  syncPlayerToServer({
+    id: player.id,
+    name: player.name,
+    department: player.department,
+    totalCoins: player.totalCoins,
+    gamesPlayed: player.gamesPlayed,
+  });
 }
 
 export function createPlayer(name: string, department: string): Player {
@@ -24,6 +34,10 @@ export function createPlayer(name: string, department: string): Player {
     rewards: [],
   };
   savePlayer(player);
+
+  // Register on server
+  registerPlayer(player.id, name, department);
+
   return player;
 }
 
@@ -35,6 +49,10 @@ export function addCoins(player: Player, coins: number, game: string, details: s
   };
   savePlayer(updated);
   addHistory({ game, coinsWon: coins, timestamp: Date.now(), details });
+
+  // Record game result on server (fire and forget)
+  recordGameResult(player.id, game, coins, details, updated.totalCoins);
+
   return updated;
 }
 

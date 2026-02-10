@@ -3,6 +3,7 @@ import type { Player } from '../types';
 import { REWARDS, getTierColor } from '../utils/rewards';
 import { savePlayer } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
+import { recordRewardRedemption } from '../utils/api';
 
 interface RewardShopProps {
   player: Player;
@@ -33,6 +34,10 @@ export default function RewardShop({ player, onUpdate }: RewardShopProps) {
     setShowConfirm(null);
     setRedeemed(rewardId);
     setGreeting(getGreeting(player.department));
+
+    // Record on server
+    recordRewardRedemption(player.id, reward.name, reward.coinCost, updated.totalCoins);
+
     setTimeout(() => { setRedeemed(null); setGreeting(''); }, 5000);
   };
 
