@@ -187,188 +187,190 @@ export function playRedeem() {
 }
 
 // --- Lì Xì Sound Effects ---
+// All heavy sound functions are deferred with setTimeout(0) to avoid blocking UI
 
 // Lắc lì xì - jingling coins/bells rattle
 export function playShakeLiXi() {
   if (!sfxEnabled) return;
-  try {
-    const ctx = getCtx();
-    const duration = 1.4;
+  // Defer audio node creation to avoid blocking the click handler
+  setTimeout(() => {
+    try {
+      const ctx = getCtx();
 
-    // Create multiple jingle layers
-    for (let i = 0; i < 12; i++) {
-      const delay = i * 0.1 + Math.random() * 0.05;
-      const freq = 2000 + Math.random() * 3000;
+      // Jingle layers (reduced from 12 to 6 for performance)
+      for (let i = 0; i < 6; i++) {
+        const delay = i * 0.2 + Math.random() * 0.05;
+        const freq = 2000 + Math.random() * 3000;
 
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-      filter.Q.setValueAtTime(15, ctx.currentTime + delay);
-
-      const vol = 0.03 + Math.random() * 0.02;
-      gain.gain.setValueAtTime(0.001, ctx.currentTime + delay);
-      gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + delay + 0.005);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.06);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(ctx.currentTime + delay);
-      osc.stop(ctx.currentTime + delay + 0.08);
-    }
-
-    // Low rumble (envelope shaking)
-    for (let i = 0; i < 6; i++) {
-      const delay = i * 0.2 + 0.05;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(80 + Math.random() * 40, ctx.currentTime + delay);
-      gain.gain.setValueAtTime(0.06, ctx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.12);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(ctx.currentTime + delay);
-      osc.stop(ctx.currentTime + delay + 0.15);
-    }
-
-    // Tiny bell accents
-    const bellNotes = [1760, 2093, 2637, 1568, 2349];
-    bellNotes.forEach((freq, i) => {
-      const delay = 0.15 + i * 0.25 + Math.random() * 0.08;
-      if (delay < duration) {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'sine';
+
+        osc.type = 'square';
         osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-        gain.gain.setValueAtTime(0.04, ctx.currentTime + delay);
+
+        const vol = 0.04 + Math.random() * 0.02;
+        gain.gain.setValueAtTime(0.001, ctx.currentTime + delay);
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + delay + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.08);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 0.1);
+      }
+
+      // Low rumble (envelope shaking) - reduced to 3
+      for (let i = 0; i < 3; i++) {
+        const delay = i * 0.4 + 0.05;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(80 + Math.random() * 40, ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.07, ctx.currentTime + delay);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.15);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start(ctx.currentTime + delay);
-        osc.stop(ctx.currentTime + delay + 0.2);
+        osc.stop(ctx.currentTime + delay + 0.18);
       }
-    });
-  } catch { /* */ }
+
+      // Bell accents - reduced to 3
+      const bellNotes = [1760, 2349, 2637];
+      bellNotes.forEach((freq, i) => {
+        const delay = 0.2 + i * 0.4;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.05, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 0.25);
+      });
+    } catch { /* */ }
+  }, 0);
 }
 
 // Mở phong bao lì xì - dramatic reveal
 export function playOpenLiXi() {
   if (!sfxEnabled) return;
-  try {
-    const ctx = getCtx();
+  setTimeout(() => {
+    try {
+      const ctx = getCtx();
 
-    // Paper rustle (noise burst)
-    const bufferSize = ctx.sampleRate * 0.15;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * 0.3;
-    }
-    const noise = ctx.createBufferSource();
-    noise.buffer = buffer;
-    const noiseFilter = ctx.createBiquadFilter();
-    noiseFilter.type = 'highpass';
-    noiseFilter.frequency.setValueAtTime(3000, ctx.currentTime);
-    const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.08, ctx.currentTime);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-    noise.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
-    noise.start();
+      // Paper rustle (noise burst)
+      const bufferSize = ctx.sampleRate * 0.1;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.3;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'highpass';
+      noiseFilter.frequency.setValueAtTime(3000, ctx.currentTime);
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.08, ctx.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start();
 
-    // Ascending reveal chime
-    const revealNotes = [PENTA[2], PENTA[4], PENTA[5], PENTA[7]];
-    revealNotes.forEach((freq, i) => {
-      const delay = 0.05 + i * 0.08;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-      gain.gain.setValueAtTime(0.1, ctx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.3);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(ctx.currentTime + delay);
-      osc.stop(ctx.currentTime + delay + 0.35);
-    });
+      // Ascending reveal chime
+      const revealNotes = [PENTA[2], PENTA[4], PENTA[5], PENTA[7]];
+      revealNotes.forEach((freq, i) => {
+        const delay = 0.05 + i * 0.08;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 0.35);
+      });
 
-    // Final sparkle
-    setTimeout(() => {
-      playTone(PENTA[7], 0.4, 'sine', 0.08);
-    }, 350);
-  } catch { /* */ }
+      // Final sparkle
+      setTimeout(() => {
+        playTone(PENTA[7], 0.4, 'sine', 0.08);
+      }, 350);
+    } catch { /* */ }
+  }, 0);
 }
 
 // Jackpot lì xì - big win fanfare
 export function playJackpotLiXi() {
   if (!sfxEnabled) return;
-  try {
-    const ctx = getCtx();
+  setTimeout(() => {
+    try {
+      const ctx = getCtx();
 
-    // Drum roll
-    for (let i = 0; i < 8; i++) {
-      const delay = i * 0.06;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(120, ctx.currentTime + delay);
-      osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + delay + 0.06);
-      gain.gain.setValueAtTime(0.08 + i * 0.01, ctx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.08);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(ctx.currentTime + delay);
-      osc.stop(ctx.currentTime + delay + 0.1);
-    }
+      // Drum roll - reduced to 4
+      for (let i = 0; i < 4; i++) {
+        const delay = i * 0.1;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(120, ctx.currentTime + delay);
+        osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + delay + 0.08);
+        gain.gain.setValueAtTime(0.1 + i * 0.02, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.1);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 0.12);
+      }
 
-    // Fanfare melody (ascending pentatonic triumph)
-    const fanfare = [PENTA[0], PENTA[2], PENTA[4], PENTA[5], PENTA[7], PENTA[7]];
-    fanfare.forEach((freq, i) => {
-      const delay = 0.5 + i * 0.12;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = i < 4 ? 'triangle' : 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-      const vol = i === fanfare.length - 1 ? 0.15 : 0.1;
-      const dur = i === fanfare.length - 1 ? 0.8 : 0.2;
-      gain.gain.setValueAtTime(vol, ctx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(ctx.currentTime + delay);
-      osc.stop(ctx.currentTime + delay + dur + 0.1);
-    });
+      // Fanfare melody (ascending pentatonic triumph)
+      const fanfare = [PENTA[0], PENTA[2], PENTA[4], PENTA[7]];
+      fanfare.forEach((freq, i) => {
+        const delay = 0.45 + i * 0.15;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = i < 3 ? 'triangle' : 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        const vol = i === fanfare.length - 1 ? 0.15 : 0.1;
+        const dur = i === fanfare.length - 1 ? 0.8 : 0.2;
+        gain.gain.setValueAtTime(vol, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + dur + 0.1);
+      });
 
-    // Gong hit at the peak
-    setTimeout(() => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(65, ctx.currentTime);
-      gain.gain.setValueAtTime(0.15, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 2);
-    }, 1000);
-
-    // Sparkle shower
-    for (let i = 0; i < 6; i++) {
+      // Gong hit at the peak
       setTimeout(() => {
-        const freq = 1200 + Math.random() * 2000;
-        playTone(freq, 0.15, 'sine', 0.04);
-      }, 1200 + i * 150);
-    }
-  } catch { /* */ }
+        try {
+          const c = getCtx();
+          const osc = c.createOscillator();
+          const gain = c.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(65, c.currentTime);
+          gain.gain.setValueAtTime(0.15, c.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 2);
+          osc.connect(gain);
+          gain.connect(c.destination);
+          osc.start();
+          osc.stop(c.currentTime + 2);
+        } catch { /* */ }
+      }, 900);
+
+      // Sparkle shower
+      for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+          const freq = 1200 + Math.random() * 2000;
+          playTone(freq, 0.15, 'sine', 0.04);
+        }, 1100 + i * 180);
+      }
+    } catch { /* */ }
+  }, 0);
 }
 
 // --- Background Music: Nhạc Tết Việt Nam ---
