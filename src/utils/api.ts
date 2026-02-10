@@ -15,7 +15,13 @@ export function clearAccessToken(): void {
 }
 
 export function isAccessVerified(): boolean {
-  return !!getAccessToken();
+  const token = getAccessToken();
+  // Reject invalid tokens (e.g. old 'offline-mode' fallback)
+  if (!token || token === 'offline-mode') {
+    if (token) clearAccessToken();
+    return false;
+  }
+  return true;
 }
 
 interface ApiPlayer {
@@ -104,9 +110,7 @@ export async function verifyAccessCode(code: string): Promise<{ success: boolean
     }
     return { success: false, error: data.error || 'Mã truy cập không đúng' };
   } catch {
-    // Server not available, allow access with fallback
-    setAccessToken('offline-mode');
-    return { success: true };
+    return { success: false, error: 'Không thể kết nối server. Vui lòng thử lại sau.' };
   }
 }
 

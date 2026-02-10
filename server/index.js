@@ -40,9 +40,10 @@ app.post('/api/verify-access', (req, res) => {
   return res.status(401).json({ error: 'Mã truy cập không đúng' });
 });
 
-// Middleware: check access token on all /api/* routes except verify-access
+// Middleware: check access token on all /api/* routes except auth endpoints
 app.use('/api', (req, res, next) => {
-  if (req.path === '/verify-access') return next();
+  // Skip auth for verification endpoints
+  if (req.path === '/verify-access' || req.path === '/admin/verify') return next();
   const token = req.headers['x-access-token'];
   const expectedToken = Buffer.from(`tbs-tet2026-${ACCESS_CODE}-verified`).toString('base64');
   if (token !== expectedToken) {
