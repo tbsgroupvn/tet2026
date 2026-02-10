@@ -18,6 +18,15 @@ function getCtx(): AudioContext {
   return audioCtx;
 }
 
+// Pre-initialize AudioContext on first user interaction to avoid lag later.
+// Call this from any early click/touch handler (e.g. access code verify).
+export function initAudio() {
+  if (audioCtx) return;
+  try {
+    audioCtx = new AudioContext();
+  } catch { /* not supported */ }
+}
+
 // Vietnamese pentatonic scale (Hơi Nam) - C D E G A across octaves
 const PENTA = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
 
@@ -42,8 +51,7 @@ const TET_MELODIES: [number, number, number][][] = [
   [[2, 0.4, 0.05], [0, 0.3, 0.1], [2, 0.3, 0.05], [4, 0.5, 0.1], [2, 0.3, 0.05], [0, 0.7, 0.5]],
 ];
 
-function playTone(freq: number, duration: number, type: OscillatorType = 'sine', volume = 0.15) {
-  if (!sfxEnabled) return;
+function playToneImmediate(freq: number, duration: number, type: OscillatorType = 'sine', volume = 0.15) {
   try {
     const ctx = getCtx();
     const osc = ctx.createOscillator();
@@ -57,6 +65,12 @@ function playTone(freq: number, duration: number, type: OscillatorType = 'sine',
     osc.start();
     osc.stop(ctx.currentTime + duration);
   } catch { /* audio not supported */ }
+}
+
+// Deferred version — never blocks caller
+function playTone(freq: number, duration: number, type: OscillatorType = 'sine', volume = 0.15) {
+  if (!sfxEnabled) return;
+  setTimeout(() => playToneImmediate(freq, duration, type, volume), 0);
 }
 
 // Play a note with Vietnamese vibrato (rung) ornament
@@ -124,49 +138,53 @@ export function playCoinCollect() {
 
 export function playDrum() {
   if (!sfxEnabled) return;
-  try {
-    const ctx = getCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(150, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.2, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.15);
-  } catch { /* */ }
+  setTimeout(() => {
+    try {
+      const ctx = getCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(150, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.15);
+    } catch { /* */ }
+  }, 0);
 }
 
 export function playGong() {
   if (!sfxEnabled) return;
-  try {
-    const ctx = getCtx();
-    // Low gong
-    const osc1 = ctx.createOscillator();
-    const gain1 = ctx.createGain();
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(80, ctx.currentTime);
-    gain1.gain.setValueAtTime(0.2, ctx.currentTime);
-    gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
-    osc1.connect(gain1);
-    gain1.connect(ctx.destination);
-    osc1.start();
-    osc1.stop(ctx.currentTime + 1.5);
-    // Shimmer overtone
-    const osc2 = ctx.createOscillator();
-    const gain2 = ctx.createGain();
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(240, ctx.currentTime);
-    gain2.gain.setValueAtTime(0.08, ctx.currentTime);
-    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.0);
-    osc2.connect(gain2);
-    gain2.connect(ctx.destination);
-    osc2.start();
-    osc2.stop(ctx.currentTime + 1.0);
-  } catch { /* */ }
+  setTimeout(() => {
+    try {
+      const ctx = getCtx();
+      // Low gong
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(80, ctx.currentTime);
+      gain1.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start();
+      osc1.stop(ctx.currentTime + 1.5);
+      // Shimmer overtone
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(240, ctx.currentTime);
+      gain2.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.0);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start();
+      osc2.stop(ctx.currentTime + 1.0);
+    } catch { /* */ }
+  }, 0);
 }
 
 export function playChime() {

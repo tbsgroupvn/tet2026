@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { verifyAccessCode, isAccessVerified } from '../utils/api';
+import { initAudio } from '../utils/sounds';
 
 interface LoginScreenProps {
   onLogin: (name: string, department: string) => void;
@@ -25,6 +26,8 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [verifying, setVerifying] = useState(false);
 
   const handleVerifyAccess = async () => {
+    // Pre-init AudioContext on this early interaction so playGong() won't lag later
+    initAudio();
     if (!accessCode.trim()) {
       setAccessError('Vui lòng nhập mã truy cập');
       return;
