@@ -315,6 +315,32 @@ function adminAuth(req, res, next) {
   next();
 }
 
+// Validate admin token (check if still valid without re-entering code)
+app.get('/api/admin/validate', adminAuth, (_req, res) => {
+  res.json({ valid: true });
+});
+
+// Database health check for admin
+app.get('/api/admin/health', adminAuth, async (_req, res) => {
+  try {
+    const playerCount = await db.execute('SELECT COUNT(*) as count FROM players');
+    const redemptionCount = await db.execute('SELECT COUNT(*) as count FROM rewards_redeemed');
+    const gameCount = await db.execute('SELECT COUNT(*) as count FROM game_results');
+    res.json({
+      status: 'ok',
+      database: 'connected',
+      tables: {
+        players: playerCount.rows[0].count,
+        rewards_redeemed: redemptionCount.rows[0].count,
+        game_results: gameCount.rows[0].count,
+      },
+    });
+  } catch (err) {
+    console.error('Database health check failed:', err);
+    res.status(500).json({ status: 'error', database: 'disconnected', error: err.message });
+  }
+});
+
 app.get('/api/admin/redemptions', adminAuth, async (_req, res) => {
   try {
     const result = await db.execute(`
