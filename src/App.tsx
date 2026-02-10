@@ -18,6 +18,7 @@ import XinXam from './games/XinXam';
 import CungOngBa from './games/CungOngBa';
 import DoVuiTBS from './games/DoVuiTBS';
 import CaoVeSo from './games/CaoVeSo';
+import LogisticsChina from './games/LogisticsChina';
 import AdminDashboard from './components/AdminDashboard';
 import MouseTrail from './components/MouseTrail';
 import SoundControl from './components/SoundControl';
@@ -118,6 +119,7 @@ export default function App() {
           {currentGame === 'cung-ong-ba' && <CungOngBa {...gameProps} />}
           {currentGame === 'do-vui-tbs' && <DoVuiTBS {...gameProps} />}
           {currentGame === 'cao-ve-so' && <CaoVeSo {...gameProps} />}
+          {currentGame === 'logistics-china' && <LogisticsChina {...gameProps} />}
         </main>
       </div>
     );
@@ -237,6 +239,13 @@ export default function App() {
                 description="Cào lớp bạc để khám phá giải thưởng! Cào 60% diện tích để mở thưởng!"
                 color="#f1c40f"
                 onClick={() => selectGame('cao-ve-so')}
+              />
+              <GameCard
+                emoji="🚢"
+                title="Logistics & TQ"
+                description="Thử thách kiến thức logistics, XNK, Incoterms và thị trường Trung Quốc!"
+                color="#0e4d92"
+                onClick={() => selectGame('logistics-china')}
               />
             </div>
 
