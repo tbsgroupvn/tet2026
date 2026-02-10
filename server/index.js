@@ -353,12 +353,14 @@ app.get('/api/admin/stats', adminAuth, (_req, res) => {
 
 // ============ PvP Oẳn Tù Tì (Real-time 2-player) ============
 const pvpRooms = new Map();
+const ROOM_TTL = 30 * 60 * 1000;
+const REVEAL_DURATION = 3500;
 
 // Cleanup stale rooms every 5 minutes
 setInterval(() => {
   const now = Date.now();
   for (const [code, room] of pvpRooms) {
-    if (now - room.createdAt > 30 * 60 * 1000) pvpRooms.delete(code);
+    if (now - room.createdAt > ROOM_TTL) pvpRooms.delete(code);
   }
 }, 5 * 60 * 1000);
 
@@ -380,9 +382,20 @@ function getWinner(p1, p2) {
   return 'p2';
 }
 
+// Auto-advance from 'reveal' to 'choosing' based on timestamp
+function autoAdvanceIfNeeded(room) {
+  if (room.status === 'reveal' && room.revealAt && Date.now() - room.revealAt >= REVEAL_DURATION) {
+    room.round++;
+    room.players[0].choice = null;
+    room.players[1].choice = null;
+    room.status = 'choosing';
+    room.revealAt = null;
+  }
+}
+
 function sanitizeRoom(room, playerId) {
+  autoAdvanceIfNeeded(room);
   const myIndex = room.players.findIndex(p => p.id === playerId);
-  const opponentIndex = myIndex === 0 ? 1 : 0;
 
   return {
     code: room.code,
@@ -393,7 +406,6 @@ function sanitizeRoom(room, playerId) {
       id: p.id,
       name: p.name,
       hasChosen: !!p.choice,
-      // Only reveal choices when both have chosen (reveal/nextRound/finished)
       choice: (room.status === 'reveal' || room.status === 'finished') ? p.choice : (i === myIndex ? p.choice : null),
     })),
     myIndex,
@@ -414,9 +426,10 @@ app.post('/api/pvp/create', (req, res) => {
     players: [{ id: playerId, name: playerName, choice: null }],
     scores: [0, 0],
     round: 1,
-    status: 'waiting', // waiting, choosing, reveal, finished
+    status: 'waiting',
     lastResult: null,
     winner: null,
+    revealAt: null,
     createdAt: Date.now(),
   };
   pvpRooms.set(code, room);
@@ -447,6 +460,7 @@ app.post('/api/pvp/move', (req, res) => {
 
   const room = pvpRooms.get(code);
   if (!room) return res.status(404).json({ error: 'Không tìm thấy phòng' });
+  autoAdvanceIfNeeded(room);
   if (room.status !== 'choosing') return res.status(400).json({ error: 'Chưa đến lượt chọn' });
 
   const playerIndex = room.players.findIndex(p => p.id === playerId);
@@ -455,7 +469,6 @@ app.post('/api/pvp/move', (req, res) => {
 
   room.players[playerIndex].choice = choice;
 
-  // Check if both players have chosen
   if (room.players[0].choice && room.players[1].choice) {
     const result = getWinner(room.players[0].choice, room.players[1].choice);
     if (result === 'p1') room.scores[0]++;
@@ -463,25 +476,16 @@ app.post('/api/pvp/move', (req, res) => {
 
     room.lastResult = {
       choices: [room.players[0].choice, room.players[1].choice],
-      result, // 'p1', 'p2', 'draw'
+      result,
       round: room.round,
     };
 
-    // Check if match is over (best of 5)
     if (room.scores[0] >= 3 || room.scores[1] >= 3) {
       room.status = 'finished';
       room.winner = room.scores[0] >= 3 ? 0 : 1;
     } else {
       room.status = 'reveal';
-      // Auto-advance to next round after 3 seconds
-      setTimeout(() => {
-        if (pvpRooms.has(code) && room.status === 'reveal') {
-          room.round++;
-          room.players[0].choice = null;
-          room.players[1].choice = null;
-          room.status = 'choosing';
-        }
-      }, 3500);
+      room.revealAt = Date.now();
     }
   }
 
