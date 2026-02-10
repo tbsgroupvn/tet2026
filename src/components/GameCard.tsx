@@ -15,11 +15,15 @@ export default function GameCard({ emoji, title, description, color, onClick }: 
       style={{ '--card-color': color } as React.CSSProperties}
       onClick={onClick}
       onMouseEnter={playHover}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Chơi game ${title}`}
     >
-      <div className="game-card-emoji">{emoji}</div>
+      <div className="game-card-emoji" aria-hidden="true">{emoji}</div>
       <h3 className="game-card-title">{title}</h3>
       <p className="game-card-desc">{description}</p>
-      <button className="game-card-btn">Chơi Ngay</button>
+      <span className="game-card-btn" aria-hidden="true">Chơi Ngay</span>
     </div>
   );
 }

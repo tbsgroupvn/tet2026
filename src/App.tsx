@@ -231,8 +231,8 @@ export default function App() {
               </div>
             </div>
 
-            <h3 className="section-title">Chọn Trò Chơi</h3>
-            <div className="games-grid">
+            <h3 className="section-title" id="games-section">Chọn Trò Chơi</h3>
+            <div className="games-grid" role="list" aria-labelledby="games-section">
               <GameCard
                 emoji="🧧"
                 title="Lắc Lì Xì"

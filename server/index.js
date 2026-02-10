@@ -19,7 +19,45 @@ const PORT = process.env.PORT || 3001;
 const ACCESS_CODE = process.env.ACCESS_CODE || 'TBS2026TET';
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '100kb' }));
+
+// ============ Rate Limiting (in-memory) ============
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const RATE_LIMIT_MAX = 60;
+
+function rateLimit(req, res, next) {
+  const ip = req.headers['x-forwarded-for'] || req.ip || 'unknown';
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record || now - record.windowStart > RATE_LIMIT_WINDOW) {
+    rateLimitMap.set(ip, { windowStart: now, count: 1 });
+    return next();
+  }
+
+  record.count++;
+  if (record.count > RATE_LIMIT_MAX) {
+    return res.status(429).json({ error: 'Quá nhiều yêu cầu. Vui lòng thử lại sau.' });
+  }
+  next();
+}
+
+// ============ Input Sanitization ============
+function sanitizeString(str, maxLen = 100) {
+  if (typeof str !== 'string') return '';
+  return str.trim().slice(0, maxLen).replace(/<[^>]*>/g, '');
+}
+
+// Cleanup rate limit map every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, record] of rateLimitMap) {
+    if (now - record.windowStart > RATE_LIMIT_WINDOW * 2) rateLimitMap.delete(ip);
+  }
+}, 5 * 60 * 1000);
+
+app.use(rateLimit);
 
 // Serve static files from dist (production)
 app.use(express.static(join(__dirname, '..', 'dist')));
@@ -57,9 +95,14 @@ app.use('/api', (req, res, next) => {
 // Register / Login player
 app.post('/api/players', (req, res) => {
   try {
-    const { id, name, department } = req.body;
+    const id = sanitizeString(req.body.id, 50);
+    const name = sanitizeString(req.body.name, 50);
+    const department = sanitizeString(req.body.department, 50);
     if (!id || !name || !department) {
       return res.status(400).json({ error: 'Thiếu thông tin người chơi' });
+    }
+    if (name.length < 2) {
+      return res.status(400).json({ error: 'Tên phải có ít nhất 2 ký tự' });
     }
 
     stmts.upsertPlayer.run({
@@ -117,7 +160,11 @@ app.put('/api/players/:id', (req, res) => {
 // Record game result
 app.post('/api/game-results', (req, res) => {
   try {
-    const { playerId, game, coinsWon, details, totalCoins } = req.body;
+    const playerId = sanitizeString(req.body.playerId, 50);
+    const game = sanitizeString(req.body.game, 30);
+    const coinsWon = Math.max(-50, Math.min(200, parseInt(req.body.coinsWon) || 0));
+    const details = sanitizeString(req.body.details || '', 200);
+    const { totalCoins } = req.body;
     if (!playerId || !game) {
       return res.status(400).json({ error: 'Thiếu thông tin kết quả' });
     }
@@ -126,8 +173,8 @@ app.post('/api/game-results', (req, res) => {
     stmts.addGameResult.run({
       playerId,
       game,
-      coinsWon: coinsWon || 0,
-      details: details || '',
+      coinsWon,
+      details,
     });
 
     // Update player's total coins
@@ -145,17 +192,27 @@ app.post('/api/game-results', (req, res) => {
 // Record reward redemption
 app.post('/api/rewards', (req, res) => {
   try {
-    const { playerId, rewardName, coinCost, totalCoins, paymentMethod, paymentInfo } = req.body;
+    const playerId = sanitizeString(req.body.playerId, 50);
+    const rewardName = sanitizeString(req.body.rewardName, 100);
+    const coinCost = Math.max(0, parseInt(req.body.coinCost) || 0);
+    const paymentMethod = sanitizeString(req.body.paymentMethod || '', 20);
+    const paymentInfo = sanitizeString(req.body.paymentInfo || '', 200);
+    const { totalCoins } = req.body;
     if (!playerId || !rewardName) {
       return res.status(400).json({ error: 'Thiếu thông tin đổi thưởng' });
+    }
+    // Verify player has enough coins
+    const player = stmts.getPlayer.get(playerId);
+    if (!player || player.total_coins < coinCost) {
+      return res.status(400).json({ error: 'Không đủ xu để đổi thưởng' });
     }
 
     const result = stmts.addRewardRedeemed.run({
       playerId,
       rewardName,
-      coinCost: coinCost || 0,
-      paymentMethod: paymentMethod || '',
-      paymentInfo: paymentInfo || '',
+      coinCost,
+      paymentMethod,
+      paymentInfo,
     });
 
     // Update player's coins after redemption
@@ -351,180 +408,9 @@ app.get('/api/admin/stats', adminAuth, (_req, res) => {
   }
 });
 
-// ============ PvP Oẳn Tù Tì (Real-time 2-player) ============
-const pvpRooms = new Map();
-const ROOM_TTL = 30 * 60 * 1000;
-const REVEAL_DURATION = 3500;
-
-// Cleanup stale rooms every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [code, room] of pvpRooms) {
-    if (now - room.createdAt > ROOM_TTL) pvpRooms.delete(code);
-  }
-}, 5 * 60 * 1000);
-
-function generateRoomCode() {
-  let code;
-  do {
-    code = String(1000 + Math.floor(Math.random() * 9000));
-  } while (pvpRooms.has(code));
-  return code;
-}
-
-function getWinner(p1, p2) {
-  if (p1 === p2) return 'draw';
-  if (
-    (p1 === 'keo' && p2 === 'bao') ||
-    (p1 === 'bua' && p2 === 'keo') ||
-    (p1 === 'bao' && p2 === 'bua')
-  ) return 'p1';
-  return 'p2';
-}
-
-// Auto-advance from 'reveal' to 'choosing' based on timestamp
-function autoAdvanceIfNeeded(room) {
-  if (room.status === 'reveal' && room.revealAt && Date.now() - room.revealAt >= REVEAL_DURATION) {
-    room.round++;
-    room.players[0].choice = null;
-    room.players[1].choice = null;
-    room.status = 'choosing';
-    room.revealAt = null;
-  }
-}
-
-function sanitizeRoom(room, playerId) {
-  autoAdvanceIfNeeded(room);
-  const myIndex = room.players.findIndex(p => p.id === playerId);
-
-  return {
-    code: room.code,
-    status: room.status,
-    round: room.round,
-    scores: room.scores,
-    players: room.players.map((p, i) => ({
-      id: p.id,
-      name: p.name,
-      hasChosen: !!p.choice,
-      choice: (room.status === 'reveal' || room.status === 'finished') ? p.choice : (i === myIndex ? p.choice : null),
-    })),
-    myIndex,
-    lastResult: room.lastResult,
-    winner: room.winner,
-    createdAt: room.createdAt,
-  };
-}
-
-// Create room
-app.post('/api/pvp/create', (req, res) => {
-  const { playerId, playerName } = req.body;
-  if (!playerId || !playerName) return res.status(400).json({ error: 'Thiếu thông tin' });
-
-  const code = generateRoomCode();
-  const room = {
-    code,
-    players: [{ id: playerId, name: playerName, choice: null }],
-    scores: [0, 0],
-    round: 1,
-    status: 'waiting',
-    lastResult: null,
-    winner: null,
-    revealAt: null,
-    createdAt: Date.now(),
-  };
-  pvpRooms.set(code, room);
-  res.json({ code, room: sanitizeRoom(room, playerId) });
-});
-
-// Join room
-app.post('/api/pvp/join', (req, res) => {
-  const { code, playerId, playerName } = req.body;
-  if (!code || !playerId || !playerName) return res.status(400).json({ error: 'Thiếu thông tin' });
-
-  const room = pvpRooms.get(code);
-  if (!room) return res.status(404).json({ error: 'Không tìm thấy phòng' });
-  if (room.status !== 'waiting') return res.status(400).json({ error: 'Phòng đã bắt đầu' });
-  if (room.players.length >= 2) return res.status(400).json({ error: 'Phòng đã đầy' });
-  if (room.players[0].id === playerId) return res.status(400).json({ error: 'Không thể tự chơi với chính mình' });
-
-  room.players.push({ id: playerId, name: playerName, choice: null });
-  room.status = 'choosing';
-  res.json({ room: sanitizeRoom(room, playerId) });
-});
-
-// Submit move
-app.post('/api/pvp/move', (req, res) => {
-  const { code, playerId, choice } = req.body;
-  if (!code || !playerId || !choice) return res.status(400).json({ error: 'Thiếu thông tin' });
-  if (!['keo', 'bua', 'bao'].includes(choice)) return res.status(400).json({ error: 'Lựa chọn không hợp lệ' });
-
-  const room = pvpRooms.get(code);
-  if (!room) return res.status(404).json({ error: 'Không tìm thấy phòng' });
-  autoAdvanceIfNeeded(room);
-  if (room.status !== 'choosing') return res.status(400).json({ error: 'Chưa đến lượt chọn' });
-
-  const playerIndex = room.players.findIndex(p => p.id === playerId);
-  if (playerIndex === -1) return res.status(403).json({ error: 'Bạn không trong phòng này' });
-  if (room.players[playerIndex].choice) return res.status(400).json({ error: 'Bạn đã chọn rồi' });
-
-  room.players[playerIndex].choice = choice;
-
-  if (room.players[0].choice && room.players[1].choice) {
-    const result = getWinner(room.players[0].choice, room.players[1].choice);
-    if (result === 'p1') room.scores[0]++;
-    else if (result === 'p2') room.scores[1]++;
-
-    room.lastResult = {
-      choices: [room.players[0].choice, room.players[1].choice],
-      result,
-      round: room.round,
-    };
-
-    if (room.scores[0] >= 3 || room.scores[1] >= 3) {
-      room.status = 'finished';
-      room.winner = room.scores[0] >= 3 ? 0 : 1;
-    } else {
-      room.status = 'reveal';
-      room.revealAt = Date.now();
-    }
-  }
-
-  res.json({ room: sanitizeRoom(room, playerId) });
-});
-
-// Get room state (polling)
-app.get('/api/pvp/room/:code', (req, res) => {
-  const { code } = req.params;
-  const playerId = req.query.playerId;
-  if (!playerId) return res.status(400).json({ error: 'Thiếu playerId' });
-
-  const room = pvpRooms.get(code);
-  if (!room) return res.status(404).json({ error: 'Không tìm thấy phòng' });
-
-  const playerIndex = room.players.findIndex(p => p.id === playerId);
-  if (playerIndex === -1) return res.status(403).json({ error: 'Bạn không trong phòng này' });
-
-  res.json({ room: sanitizeRoom(room, playerId) });
-});
-
-// Leave room
-app.post('/api/pvp/leave', (req, res) => {
-  const { code, playerId } = req.body;
-  const room = pvpRooms.get(code);
-  if (room) {
-    // If match not finished, the leaver forfeits
-    if (room.status !== 'finished' && room.players.length === 2) {
-      const leaverIndex = room.players.findIndex(p => p.id === playerId);
-      if (leaverIndex !== -1) {
-        room.status = 'finished';
-        room.winner = leaverIndex === 0 ? 1 : 0;
-      }
-    } else {
-      pvpRooms.delete(code);
-    }
-  }
-  res.json({ success: true });
-});
+// ============ PvP Oẳn Tù Tì (shared module) ============
+import { registerPvpRoutes } from '../shared/pvp.js';
+registerPvpRoutes(app, sanitizeString);
 
 // SPA fallback - serve index.html for all non-API routes
 app.use((_req, res) => {

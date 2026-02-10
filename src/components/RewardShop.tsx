@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Player } from '../types';
 import { REWARDS, getTierColor } from '../utils/rewards';
 import { savePlayer } from '../utils/storage';
@@ -57,6 +57,21 @@ export default function RewardShop({ player, onUpdate }: RewardShopProps) {
   useEffect(() => {
     fetchRedemptions(player.id).then(setRedemptions);
   }, [player.id]);
+
+  // Close modals on Escape key
+  const handleEscape = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      if (receipt) setReceipt(null);
+      else if (showPaymentForm) setShowPaymentForm(null);
+    }
+  }, [receipt, showPaymentForm]);
+
+  useEffect(() => {
+    if (showPaymentForm || receipt) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [showPaymentForm, receipt, handleEscape]);
 
   const filtered = selectedTier === 'all'
     ? REWARDS
@@ -211,7 +226,7 @@ export default function RewardShop({ player, onUpdate }: RewardShopProps) {
 
       {/* Payment Form Modal */}
       {showPaymentForm && (
-        <div className="payment-modal-overlay" onClick={() => setShowPaymentForm(null)}>
+        <div className="payment-modal-overlay" onClick={() => setShowPaymentForm(null)} onKeyDown={(e) => { if (e.key === 'Escape') setShowPaymentForm(null); }} role="dialog" aria-modal="true" aria-label="Thông tin nhận thưởng">
           <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
             <h3>💳 Thông Tin Nhận Thưởng</h3>
             <p className="payment-reward-name">
@@ -321,7 +336,7 @@ export default function RewardShop({ player, onUpdate }: RewardShopProps) {
 
       {/* Receipt Modal */}
       {receipt && (
-        <div className="payment-modal-overlay" onClick={() => setReceipt(null)}>
+        <div className="payment-modal-overlay" onClick={() => setReceipt(null)} onKeyDown={(e) => { if (e.key === 'Escape') setReceipt(null); }} role="dialog" aria-modal="true" aria-label="Biên lai đổi thưởng">
           <div className="receipt-modal" onClick={(e) => e.stopPropagation()}>
             <div className="receipt-header">
               <div className="receipt-check">✅</div>

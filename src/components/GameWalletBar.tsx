@@ -8,7 +8,7 @@ interface Props {
 
 export default function GameWalletBar({ player, onGoToRewards }: Props) {
   return (
-    <div className="game-wallet-bar">
+    <div className="game-wallet-bar" role="status" aria-label={`Ví xu: ${player.totalCoins} xu, ${player.gamesPlayed} lượt chơi`}>
       <div className="game-wallet-info">
         <span className="game-wallet-coins">🪙 {player.totalCoins.toLocaleString()} xu</span>
         <span className="game-wallet-plays">🎮 {player.gamesPlayed} lượt</span>
@@ -16,6 +16,7 @@ export default function GameWalletBar({ player, onGoToRewards }: Props) {
       <button
         className="game-wallet-btn"
         onClick={() => { playClick(); onGoToRewards(); }}
+        aria-label="Đổi thưởng bằng xu"
       >
         🎁 Đổi Thưởng
       </button>

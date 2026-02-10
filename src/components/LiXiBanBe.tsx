@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Player } from '../types';
 
 interface Wish {
@@ -58,6 +58,18 @@ export default function LiXiBanBe({ player }: Props) {
     setWishes(getWishes());
   }, []);
 
+  // Close modal on Escape key
+  const handleEscape = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape' && showForm) setShowForm(false);
+  }, [showForm]);
+
+  useEffect(() => {
+    if (showForm) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [showForm, handleEscape]);
+
   const handleSend = () => {
     if (!to.trim() || !message.trim()) return;
 
@@ -98,7 +110,7 @@ export default function LiXiBanBe({ player }: Props) {
 
       {/* Send Form Modal */}
       {showForm && (
-        <div className="payment-modal-overlay" onClick={() => setShowForm(false)}>
+        <div className="payment-modal-overlay" onClick={() => setShowForm(false)} onKeyDown={(e) => { if (e.key === 'Escape') setShowForm(false); }} role="dialog" aria-modal="true" aria-label="Gửi lời chúc Tết">
           <div className="payment-modal lixi-modal" onClick={e => e.stopPropagation()}>
             {sent ? (
               <div className="lixi-sent-anim">
