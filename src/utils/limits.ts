@@ -48,6 +48,7 @@ export function getMaxPlays(game: string): number {
     case 'bai-cao': return 15;
     case 'cung-ong-ba': return 10;
     case 'do-vui-tbs': return 5;
+    case 'cao-ve-so': return 8;
     default: return 10;
   }
 }

@@ -3361,6 +3361,540 @@ button:disabled {
   }
 }
 
+/* ============ CÀO VÉ SỐ TẾT ============ */
+.cao-ve-so {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.scratch-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.scratch-header h2 {
+  color: var(--gold);
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.scratch-info {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 0.8rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.scratch-card-wrapper {
+  position: relative;
+  width: 320px;
+  height: 200px;
+  margin: 1.5rem auto;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.15);
+  border: 3px solid var(--gold);
+}
+
+.scratch-under {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8b0000, #c0392b);
+  padding: 1rem;
+}
+
+.scratch-prize-emoji {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.scratch-prize-label {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.scratch-prize-sub {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.3rem;
+}
+
+.scratch-canvas {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+  border-radius: 13px;
+  touch-action: none;
+}
+
+.scratch-hint {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.scratch-progress-bar {
+  width: 320px;
+  height: 6px;
+  margin: 0.5rem auto;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.scratch-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), #f1c40f);
+  transition: width 0.2s;
+  border-radius: 3px;
+}
+
+.scratch-result {
+  text-align: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  animation: popIn 0.4s ease-out;
+}
+
+.scratch-result.win {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.scratch-result.lose {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.scratch-result h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.3rem;
+}
+
+.scratch-new-btn {
+  display: block;
+  margin: 1.5rem auto 0;
+  padding: 0.8rem 2rem;
+  border-radius: 25px;
+  background: linear-gradient(135deg, var(--gold), #f1c40f);
+  color: #1a0a0a;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s;
+  border: none;
+}
+
+.scratch-new-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+}
+
+/* ============ ĐẾM NGƯỢC GIAO THỪA ============ */
+.countdown-box {
+  text-align: center;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 16px;
+  background: rgba(139, 0, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+}
+
+.countdown-box.countdown-tet {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(139, 0, 0, 0.3));
+  border-color: var(--gold);
+}
+
+.countdown-tet-msg {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--gold);
+  animation: pulse-glow 2s infinite;
+  padding: 0.5rem;
+}
+
+.countdown-sub {
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.countdown-title {
+  color: var(--gold);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.countdown-digits {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.countdown-num {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--gold);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.3rem 0.7rem;
+  border-radius: 10px;
+  min-width: 60px;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-seconds {
+  color: #e74c3c;
+}
+
+.countdown-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.countdown-sep {
+  font-size: 2rem;
+  color: rgba(255, 215, 0, 0.5);
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+}
+
+/* ============ HỆ THỐNG THÀNH TÍCH ============ */
+.achievements {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.achievements h2 {
+  text-align: center;
+  color: var(--gold);
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.achieve-summary {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 1.5rem;
+}
+
+.achieve-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.achieve-card {
+  padding: 1.2rem;
+  border-radius: 14px;
+  background: rgba(139, 0, 0, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.achieve-card.earned {
+  background: rgba(255, 215, 0, 0.08);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.achieve-card.locked {
+  opacity: 0.5;
+  filter: grayscale(0.5);
+}
+
+.achieve-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.achieve-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.achieve-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
+}
+
+.achieve-desc {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.8rem;
+}
+
+.achieve-progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+
+.achieve-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), #f1c40f);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.achieve-progress-text {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: right;
+}
+
+.achieve-status {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.3rem;
+}
+
+.achieve-status.earned {
+  background: rgba(255, 215, 0, 0.15);
+  color: var(--gold);
+}
+
+.achieve-status.locked {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============ LÌ XÌ BẠN BÈ ============ */
+.lixi-banbe {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.lixi-banbe h2 {
+  text-align: center;
+  color: var(--gold);
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.lixi-send-section {
+  background: rgba(139, 0, 0, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.lixi-send-section h3 {
+  color: var(--gold);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.lixi-form-group {
+  margin-bottom: 1rem;
+}
+
+.lixi-form-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.3rem;
+}
+
+.lixi-form-group input,
+.lixi-form-group textarea {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.lixi-form-group textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.lixi-form-group input:focus,
+.lixi-form-group textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+}
+
+.lixi-emoji-picker {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.lixi-emoji-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid transparent;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.lixi-emoji-btn.selected {
+  border-color: var(--gold);
+  background: rgba(255, 215, 0, 0.1);
+  transform: scale(1.1);
+}
+
+.lixi-emoji-btn:hover {
+  border-color: rgba(255, 215, 0, 0.3);
+  transform: scale(1.05);
+}
+
+.lixi-quick-msgs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.lixi-quick-msg {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.lixi-quick-msg:hover {
+  background: rgba(255, 215, 0, 0.15);
+  color: #fff;
+}
+
+.lixi-send-btn {
+  width: 100%;
+  padding: 0.9rem;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-top: 1rem;
+  transition: all 0.3s;
+  border: none;
+}
+
+.lixi-send-btn:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4);
+}
+
+.lixi-success {
+  text-align: center;
+  padding: 2rem;
+  animation: popIn 0.4s ease-out;
+}
+
+.lixi-success-emoji {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.lixi-wall {
+  margin-top: 2rem;
+}
+
+.lixi-wall h3 {
+  color: var(--gold);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.lixi-wall-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.lixi-wall-card {
+  padding: 1rem;
+  border-radius: 14px;
+  background: rgba(139, 0, 0, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.lixi-wall-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.lixi-wall-emoji {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.lixi-wall-from {
+  font-weight: 600;
+  color: var(--gold);
+  font-size: 0.9rem;
+}
+
+.lixi-wall-to {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.lixi-wall-msg {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+}
+
+.lixi-wall-time {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 0.5rem;
+}
+
+.lixi-empty {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 2rem;
+}
+
 /* ============ Company Culture Section ============ */
 .culture-section {
   margin-top: 2.5rem;

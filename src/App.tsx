@@ -17,14 +17,18 @@ import BaiCao from './games/BaiCao';
 import XinXam from './games/XinXam';
 import CungOngBa from './games/CungOngBa';
 import DoVuiTBS from './games/DoVuiTBS';
+import CaoVeSo from './games/CaoVeSo';
 import AdminDashboard from './components/AdminDashboard';
 import MouseTrail from './components/MouseTrail';
 import SoundControl from './components/SoundControl';
+import TetCountdown from './components/TetCountdown';
+import Achievements from './components/Achievements';
+import LiXiBanBe from './components/LiXiBanBe';
 import { TBS_CORE_VALUES, getRandomCultureTip } from './utils/tbsQuiz';
 import { playClick, playGong } from './utils/sounds';
 import './App.css';
 
-type Page = 'home' | 'rewards' | 'leaderboard';
+type Page = 'home' | 'rewards' | 'leaderboard' | 'wishes' | 'achievements';
 
 export default function App() {
   const [player, setPlayer] = useState<Player | null>(null);
@@ -112,6 +116,7 @@ export default function App() {
           {currentGame === 'xin-xam' && <XinXam {...gameProps} />}
           {currentGame === 'cung-ong-ba' && <CungOngBa {...gameProps} />}
           {currentGame === 'do-vui-tbs' && <DoVuiTBS {...gameProps} />}
+          {currentGame === 'cao-ve-so' && <CaoVeSo {...gameProps} />}
         </main>
       </div>
     );
@@ -155,6 +160,8 @@ export default function App() {
                 </div>
               </div>
             </div>
+
+            <TetCountdown />
 
             <h3 className="section-title">Chọn Trò Chơi</h3>
             <div className="games-grid">
@@ -221,6 +228,13 @@ export default function App() {
                 color="#3498db"
                 onClick={() => selectGame('do-vui-tbs')}
               />
+              <GameCard
+                emoji="🎟️"
+                title="Cào Vé Số Tết"
+                description="Cào lớp bạc để khám phá giải thưởng! Cào 60% diện tích để mở thưởng!"
+                color="#f1c40f"
+                onClick={() => selectGame('cao-ve-so')}
+              />
             </div>
 
             {/* Giá Trị Cốt Lõi TBS Group */}
@@ -240,6 +254,14 @@ export default function App() {
               </div>
             </div>
           </div>
+        )}
+
+        {currentPage === 'wishes' && (
+          <LiXiBanBe player={player} />
+        )}
+
+        {currentPage === 'achievements' && (
+          <Achievements player={player} />
         )}
 
         {currentPage === 'rewards' && (

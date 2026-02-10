@@ -1,4 +1,5 @@
 import type { Player } from '../types';
+import { playClick } from '../utils/sounds';
 
 interface HeaderProps {
   player: Player;
@@ -7,10 +8,15 @@ interface HeaderProps {
 }
 
 export default function Header({ player, onNavigate, currentPage }: HeaderProps) {
+  const nav = (page: string) => {
+    playClick();
+    onNavigate(page);
+  };
+
   return (
     <header className="header">
       <div className="header-inner">
-        <div className="header-brand" onClick={() => onNavigate('home')}>
+        <div className="header-brand" onClick={() => nav('home')}>
           <img src="/tbs-logo.svg" alt="TBS Group" className="header-logo-img" />
           <div>
             <h1 className="header-title">TBS Group</h1>
@@ -20,19 +26,31 @@ export default function Header({ player, onNavigate, currentPage }: HeaderProps)
         <nav className="header-nav">
           <button
             className={`nav-btn ${currentPage === 'home' ? 'active' : ''}`}
-            onClick={() => onNavigate('home')}
+            onClick={() => nav('home')}
           >
             🏠 Trang Chủ
           </button>
           <button
-            className={`nav-btn ${currentPage === 'rewards' ? 'active' : ''}`}
-            onClick={() => onNavigate('rewards')}
+            className={`nav-btn ${currentPage === 'wishes' ? 'active' : ''}`}
+            onClick={() => nav('wishes')}
           >
-            🎁 Phần Thưởng
+            🧧 Lời Chúc
+          </button>
+          <button
+            className={`nav-btn ${currentPage === 'achievements' ? 'active' : ''}`}
+            onClick={() => nav('achievements')}
+          >
+            🏅 Thành Tích
+          </button>
+          <button
+            className={`nav-btn ${currentPage === 'rewards' ? 'active' : ''}`}
+            onClick={() => nav('rewards')}
+          >
+            🎁 Đổi Thưởng
           </button>
           <button
             className={`nav-btn ${currentPage === 'leaderboard' ? 'active' : ''}`}
-            onClick={() => onNavigate('leaderboard')}
+            onClick={() => nav('leaderboard')}
           >
             🏆 Xếp Hạng
           </button>
