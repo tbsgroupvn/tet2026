@@ -37,6 +37,9 @@ db.exec(`
     player_id TEXT NOT NULL,
     reward_name TEXT NOT NULL,
     coin_cost INTEGER NOT NULL,
+    payment_method TEXT DEFAULT '',
+    payment_info TEXT DEFAULT '',
+    status TEXT DEFAULT 'pending',
     redeemed_at TEXT DEFAULT (datetime('now', 'localtime')),
     FOREIGN KEY (player_id) REFERENCES players(id)
   );
@@ -78,8 +81,8 @@ const stmts = {
   `),
 
   addRewardRedeemed: db.prepare(`
-    INSERT INTO rewards_redeemed (player_id, reward_name, coin_cost)
-    VALUES (@playerId, @rewardName, @coinCost)
+    INSERT INTO rewards_redeemed (player_id, reward_name, coin_cost, payment_method, payment_info)
+    VALUES (@playerId, @rewardName, @coinCost, @paymentMethod, @paymentInfo)
   `),
 
   getLeaderboard: db.prepare(`

@@ -1,4 +1,22 @@
 const API_BASE = '/api';
+const ACCESS_TOKEN_KEY = 'tbs_tet2026_access_token';
+
+// Access token management
+export function getAccessToken(): string | null {
+  return localStorage.getItem(ACCESS_TOKEN_KEY);
+}
+
+export function setAccessToken(token: string): void {
+  localStorage.setItem(ACCESS_TOKEN_KEY, token);
+}
+
+export function clearAccessToken(): void {
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+}
+
+export function isAccessVerified(): boolean {
+  return !!getAccessToken();
+}
 
 interface ApiPlayer {
   id: string;
@@ -40,10 +58,27 @@ export interface GameStats {
   departments: DepartmentStats[];
 }
 
+export interface RedemptionRecord {
+  id: number;
+  reward_name: string;
+  coin_cost: number;
+  payment_method: string;
+  payment_info: string;
+  status: string;
+  redeemed_at: string;
+}
+
 async function apiCall<T>(url: string, options?: RequestInit): Promise<T | null> {
   try {
+    const token = getAccessToken();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['x-access-token'] = token;
+    }
     const res = await fetch(`${API_BASE}${url}`, {
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       ...options,
     });
     if (!res.ok) return null;
@@ -51,6 +86,27 @@ async function apiCall<T>(url: string, options?: RequestInit): Promise<T | null>
   } catch {
     // Server not available, silently fail
     return null;
+  }
+}
+
+// Verify access code
+export async function verifyAccessCode(code: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/verify-access`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code }),
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      setAccessToken(data.token);
+      return { success: true };
+    }
+    return { success: false, error: data.error || 'Mã truy cập không đúng' };
+  } catch {
+    // Server not available, allow access with fallback
+    setAccessToken('offline-mode');
+    return { success: true };
   }
 }
 
@@ -90,17 +146,25 @@ export async function recordGameResult(
   });
 }
 
-// Record reward redemption
+// Record reward redemption with payment info
 export async function recordRewardRedemption(
   playerId: string,
   rewardName: string,
   coinCost: number,
-  totalCoins: number
+  totalCoins: number,
+  paymentMethod?: string,
+  paymentInfo?: string,
 ): Promise<void> {
   await apiCall('/rewards', {
     method: 'POST',
-    body: JSON.stringify({ playerId, rewardName, coinCost, totalCoins }),
+    body: JSON.stringify({ playerId, rewardName, coinCost, totalCoins, paymentMethod, paymentInfo }),
   });
+}
+
+// Get player redemption history
+export async function fetchRedemptions(playerId: string): Promise<RedemptionRecord[]> {
+  const data = await apiCall<RedemptionRecord[]>(`/players/${playerId}/redemptions`);
+  return data || [];
 }
 
 // Get leaderboard
