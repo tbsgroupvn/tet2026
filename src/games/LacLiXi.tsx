@@ -3,7 +3,7 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
-import { playCoinCollect } from '../utils/sounds';
+import { playCoinCollect, playShakeLiXi, playOpenLiXi, playJackpotLiXi } from '../utils/sounds';
 import GameRules from '../components/GameRules';
 
 const RULES = [
@@ -59,6 +59,7 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
     setIsShaking(true);
     setOpened(false);
     setResult(null);
+    playShakeLiXi();
 
     timeoutRef.current = setTimeout(() => {
       const envelope = getRandomEnvelope();
@@ -74,6 +75,12 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
     recordPlay('lac-li-xi');
     setRemaining(getRemainingPlays('lac-li-xi'));
     setGreeting(getGreeting(player.department));
+    // Play appropriate sound based on prize
+    if (result.coins >= 200) {
+      playJackpotLiXi();
+    } else {
+      playOpenLiXi();
+    }
     playCoinCollect();
     const updated = addCoins(player, result.coins, 'Lắc Lì Xì', `Nhận ${result.label}`);
     onUpdate(updated);

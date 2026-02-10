@@ -1,11 +1,12 @@
 // Web Audio API sound effects for Tet game
-// Uses pentatonic scale for Vietnamese/Asian-themed sounds
+// Vietnamese pentatonic scale + Tết melodies + Lì Xì effects
 
 let audioCtx: AudioContext | null = null;
 let musicEnabled = true;
 let sfxEnabled = true;
-let bgMusicInterval: ReturnType<typeof setInterval> | null = null;
+let bgMusicTimeout: ReturnType<typeof setTimeout> | null = null;
 let bgMusicPlaying = false;
+let melodyIndex = 0;
 
 function getCtx(): AudioContext {
   if (!audioCtx) {
@@ -17,8 +18,29 @@ function getCtx(): AudioContext {
   return audioCtx;
 }
 
-// Pentatonic notes (C D E G A) for Asian feel
+// Vietnamese pentatonic scale (Hơi Nam) - C D E G A across octaves
 const PENTA = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
+
+// Tết melody phrases - inspired by "Xuân Đã Về", "Ngày Tết Quê Em"
+// Each phrase: [noteIndex, duration, restAfter]
+const TET_MELODIES: [number, number, number][][] = [
+  // Phrase 1: Xuân đã về (ascending, joyful)
+  [[4, 0.3, 0.05], [5, 0.3, 0.05], [7, 0.5, 0.1], [5, 0.3, 0.05], [4, 0.5, 0.3]],
+  // Phrase 2: Ngày Tết (bouncy, festive)
+  [[2, 0.2, 0.05], [4, 0.2, 0.05], [5, 0.4, 0.1], [4, 0.2, 0.05], [2, 0.2, 0.05], [0, 0.5, 0.3]],
+  // Phrase 3: Mùa xuân (gentle, flowing)
+  [[0, 0.4, 0.05], [2, 0.3, 0.05], [4, 0.3, 0.1], [5, 0.4, 0.05], [7, 0.6, 0.4]],
+  // Phrase 4: Hoa mai nở (descending grace)
+  [[7, 0.3, 0.05], [5, 0.3, 0.05], [4, 0.3, 0.1], [2, 0.4, 0.05], [0, 0.6, 0.3]],
+  // Phrase 5: Pháo hoa (playful, quick)
+  [[0, 0.15, 0.05], [2, 0.15, 0.05], [4, 0.15, 0.05], [5, 0.15, 0.05], [7, 0.4, 0.1], [5, 0.2, 0.05], [4, 0.5, 0.4]],
+  // Phrase 6: Đón xuân (call-response)
+  [[5, 0.3, 0.1], [4, 0.2, 0.05], [2, 0.3, 0.1], [4, 0.4, 0.1], [5, 0.3, 0.05], [7, 0.6, 0.4]],
+  // Phrase 7: Lì xì đỏ (rhythmic, bouncy)
+  [[4, 0.2, 0.05], [4, 0.2, 0.1], [5, 0.3, 0.05], [7, 0.3, 0.1], [5, 0.2, 0.05], [4, 0.2, 0.05], [2, 0.5, 0.3]],
+  // Phrase 8: Sum vầy (warm, resting)
+  [[2, 0.4, 0.05], [0, 0.3, 0.1], [2, 0.3, 0.05], [4, 0.5, 0.1], [2, 0.3, 0.05], [0, 0.7, 0.5]],
+];
 
 function playTone(freq: number, duration: number, type: OscillatorType = 'sine', volume = 0.15) {
   if (!sfxEnabled) return;
@@ -35,6 +57,41 @@ function playTone(freq: number, duration: number, type: OscillatorType = 'sine',
     osc.start();
     osc.stop(ctx.currentTime + duration);
   } catch { /* audio not supported */ }
+}
+
+// Play a note with Vietnamese vibrato (rung) ornament
+function playVibratoNote(freq: number, duration: number, volume = 0.06) {
+  try {
+    const ctx = getCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const vibrato = ctx.createOscillator();
+    const vibratoGain = ctx.createGain();
+
+    // Main tone
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+    // Subtle vibrato (Vietnamese style - gentle pitch wobble)
+    vibrato.type = 'sine';
+    vibrato.frequency.setValueAtTime(5, ctx.currentTime); // 5Hz vibrato
+    vibratoGain.gain.setValueAtTime(freq * 0.008, ctx.currentTime); // subtle
+    vibrato.connect(vibratoGain);
+    vibratoGain.connect(osc.frequency);
+
+    // Volume envelope - soft attack, natural decay
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.03);
+    gain.gain.exponentialRampToValueAtTime(volume * 0.6, ctx.currentTime + duration * 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    vibrato.start();
+    osc.stop(ctx.currentTime + duration);
+    vibrato.stop(ctx.currentTime + duration);
+  } catch { /* */ }
 }
 
 // --- Sound Effects ---
@@ -129,23 +186,249 @@ export function playRedeem() {
   });
 }
 
-// --- Background Music ---
+// --- Lì Xì Sound Effects ---
 
-function playMusicNote() {
-  if (!musicEnabled || !bgMusicPlaying) return;
-  const idx = Math.floor(Math.random() * PENTA.length);
+// Lắc lì xì - jingling coins/bells rattle
+export function playShakeLiXi() {
+  if (!sfxEnabled) return;
   try {
     const ctx = getCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = Math.random() > 0.5 ? 'sine' : 'triangle';
-    osc.frequency.setValueAtTime(PENTA[idx] * (Math.random() > 0.5 ? 0.5 : 1), ctx.currentTime);
-    gain.gain.setValueAtTime(0.03, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 1.5);
+    const duration = 1.4;
+
+    // Create multiple jingle layers
+    for (let i = 0; i < 12; i++) {
+      const delay = i * 0.1 + Math.random() * 0.05;
+      const freq = 2000 + Math.random() * 3000;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+      filter.Q.setValueAtTime(15, ctx.currentTime + delay);
+
+      const vol = 0.03 + Math.random() * 0.02;
+      gain.gain.setValueAtTime(0.001, ctx.currentTime + delay);
+      gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + delay + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.06);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.08);
+    }
+
+    // Low rumble (envelope shaking)
+    for (let i = 0; i < 6; i++) {
+      const delay = i * 0.2 + 0.05;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(80 + Math.random() * 40, ctx.currentTime + delay);
+      gain.gain.setValueAtTime(0.06, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.15);
+    }
+
+    // Tiny bell accents
+    const bellNotes = [1760, 2093, 2637, 1568, 2349];
+    bellNotes.forEach((freq, i) => {
+      const delay = 0.15 + i * 0.25 + Math.random() * 0.08;
+      if (delay < duration) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.04, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 0.2);
+      }
+    });
+  } catch { /* */ }
+}
+
+// Mở phong bao lì xì - dramatic reveal
+export function playOpenLiXi() {
+  if (!sfxEnabled) return;
+  try {
+    const ctx = getCtx();
+
+    // Paper rustle (noise burst)
+    const bufferSize = ctx.sampleRate * 0.15;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.3;
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = 'highpass';
+    noiseFilter.frequency.setValueAtTime(3000, ctx.currentTime);
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.08, ctx.currentTime);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    noise.start();
+
+    // Ascending reveal chime
+    const revealNotes = [PENTA[2], PENTA[4], PENTA[5], PENTA[7]];
+    revealNotes.forEach((freq, i) => {
+      const delay = 0.05 + i * 0.08;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.3);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.35);
+    });
+
+    // Final sparkle
+    setTimeout(() => {
+      playTone(PENTA[7], 0.4, 'sine', 0.08);
+    }, 350);
+  } catch { /* */ }
+}
+
+// Jackpot lì xì - big win fanfare
+export function playJackpotLiXi() {
+  if (!sfxEnabled) return;
+  try {
+    const ctx = getCtx();
+
+    // Drum roll
+    for (let i = 0; i < 8; i++) {
+      const delay = i * 0.06;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(120, ctx.currentTime + delay);
+      osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + delay + 0.06);
+      gain.gain.setValueAtTime(0.08 + i * 0.01, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.08);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.1);
+    }
+
+    // Fanfare melody (ascending pentatonic triumph)
+    const fanfare = [PENTA[0], PENTA[2], PENTA[4], PENTA[5], PENTA[7], PENTA[7]];
+    fanfare.forEach((freq, i) => {
+      const delay = 0.5 + i * 0.12;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = i < 4 ? 'triangle' : 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+      const vol = i === fanfare.length - 1 ? 0.15 : 0.1;
+      const dur = i === fanfare.length - 1 ? 0.8 : 0.2;
+      gain.gain.setValueAtTime(vol, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + dur + 0.1);
+    });
+
+    // Gong hit at the peak
+    setTimeout(() => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(65, ctx.currentTime);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 2);
+    }, 1000);
+
+    // Sparkle shower
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => {
+        const freq = 1200 + Math.random() * 2000;
+        playTone(freq, 0.15, 'sine', 0.04);
+      }, 1200 + i * 150);
+    }
+  } catch { /* */ }
+}
+
+// --- Background Music: Nhạc Tết Việt Nam ---
+
+function playMelodyPhrase() {
+  if (!musicEnabled || !bgMusicPlaying) return;
+
+  const phrase = TET_MELODIES[melodyIndex % TET_MELODIES.length];
+  melodyIndex++;
+
+  let time = 0;
+  phrase.forEach(([noteIdx, duration, rest]) => {
+    setTimeout(() => {
+      if (!musicEnabled || !bgMusicPlaying) return;
+      const freq = PENTA[noteIdx];
+      playVibratoNote(freq, duration, 0.045);
+
+      // Occasional harmony (play a 5th below quietly)
+      if (Math.random() > 0.7 && noteIdx >= 2) {
+        playVibratoNote(PENTA[noteIdx - 2] * 0.5, duration * 0.8, 0.015);
+      }
+    }, time * 1000);
+    time += duration + rest;
+  });
+
+  // Schedule next phrase after this one finishes
+  const totalTime = phrase.reduce((sum, [, d, r]) => sum + d + r, 0);
+  const pause = 0.8 + Math.random() * 1.2; // breathing room between phrases
+
+  bgMusicTimeout = setTimeout(() => {
+    if (bgMusicPlaying) {
+      // Occasional soft drum between phrases
+      if (Math.random() > 0.6) {
+        playTetDrumBeat();
+      }
+      playMelodyPhrase();
+    }
+  }, (totalTime + pause) * 1000);
+}
+
+// Soft Tết drum pattern (trống nhỏ)
+function playTetDrumBeat() {
+  if (!musicEnabled) return;
+  try {
+    const ctx = getCtx();
+    const beats = [0, 0.15, 0.4, 0.55];
+    beats.forEach(delay => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      const pitch = delay < 0.3 ? 100 : 80;
+      osc.frequency.setValueAtTime(pitch, ctx.currentTime + delay);
+      osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + delay + 0.08);
+      gain.gain.setValueAtTime(0.04, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.1);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.12);
+    });
   } catch { /* */ }
 }
 
@@ -153,21 +436,16 @@ export function startBgMusic() {
   if (bgMusicPlaying) return;
   bgMusicPlaying = true;
   musicEnabled = true;
-  // Ambient pentatonic notes every 800-1600ms
-  const tick = () => {
-    if (!bgMusicPlaying) return;
-    playMusicNote();
-    bgMusicInterval = setTimeout(tick, 800 + Math.random() * 800) as unknown as ReturnType<typeof setInterval>;
-  };
-  tick();
+  melodyIndex = Math.floor(Math.random() * TET_MELODIES.length);
+  playMelodyPhrase();
 }
 
 export function stopBgMusic() {
   bgMusicPlaying = false;
   musicEnabled = false;
-  if (bgMusicInterval) {
-    clearTimeout(bgMusicInterval as unknown as number);
-    bgMusicInterval = null;
+  if (bgMusicTimeout) {
+    clearTimeout(bgMusicTimeout);
+    bgMusicTimeout = null;
   }
 }
 
