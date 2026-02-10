@@ -88,7 +88,7 @@ app.post('/api/verify-access', (req, res) => {
 
 // Access token middleware (skip auth endpoints)
 app.use('/api', (req, res, next) => {
-  if (req.path === '/verify-access' || req.path === '/admin/verify') return next();
+  if (req.path === '/verify-access' || req.path.startsWith('/admin')) return next();
   const token = req.headers['x-access-token'];
   const expected = Buffer.from(`tbs-tet2026-${ACCESS_CODE}-verified`).toString('base64');
   if (token !== expected) {
