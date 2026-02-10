@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Player, GameType } from './types';
-import { getPlayer, createPlayer } from './utils/storage';
+import { getPlayer, createPlayer, isAdminLoggedIn } from './utils/storage';
 import Fireworks from './components/Fireworks';
 import FallingElements from './components/FallingElements';
 import Header from './components/Header';
@@ -8,6 +8,7 @@ import LoginScreen from './components/LoginScreen';
 import GameCard from './components/GameCard';
 import RewardShop from './components/RewardShop';
 import Leaderboard from './components/Leaderboard';
+import AdminDashboard from './components/AdminDashboard';
 import LacLiXi from './games/LacLiXi';
 import BauCua from './games/BauCua';
 import VongQuay from './games/VongQuay';
@@ -19,10 +20,15 @@ export default function App() {
   const [player, setPlayer] = useState<Player | null>(null);
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [currentGame, setCurrentGame] = useState<GameType | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const saved = getPlayer();
-    if (saved) setPlayer(saved);
+    if (isAdminLoggedIn()) {
+      setIsAdmin(true);
+    } else {
+      const saved = getPlayer();
+      if (saved) setPlayer(saved);
+    }
   }, []);
 
   const handleLogin = (name: string, department: string) => {
@@ -30,16 +36,32 @@ export default function App() {
     setPlayer(p);
   };
 
+  const handleAdminLogin = () => {
+    setIsAdmin(true);
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdmin(false);
+  };
+
   const handlePlayerUpdate = (updated: Player) => {
     setPlayer(updated);
   };
+
+  if (isAdmin) {
+    return (
+      <div className="app">
+        <AdminDashboard onLogout={handleAdminLogout} />
+      </div>
+    );
+  }
 
   if (!player) {
     return (
       <div className="app">
         <Fireworks />
         <FallingElements />
-        <LoginScreen onLogin={handleLogin} />
+        <LoginScreen onLogin={handleLogin} onAdminLogin={handleAdminLogin} />
       </div>
     );
   }
