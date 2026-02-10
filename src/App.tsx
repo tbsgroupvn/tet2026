@@ -16,6 +16,8 @@ import TaiXiu from './games/TaiXiu';
 import BaiCao from './games/BaiCao';
 import XinXam from './games/XinXam';
 import CungOngBa from './games/CungOngBa';
+import DoVuiTBS from './games/DoVuiTBS';
+import { TBS_CORE_VALUES, getRandomCultureTip } from './utils/tbsQuiz';
 import './App.css';
 
 type Page = 'home' | 'rewards' | 'leaderboard';
@@ -69,6 +71,7 @@ export default function App() {
           {currentGame === 'bai-cao' && <BaiCao {...gameProps} />}
           {currentGame === 'xin-xam' && <XinXam {...gameProps} />}
           {currentGame === 'cung-ong-ba' && <CungOngBa {...gameProps} />}
+          {currentGame === 'do-vui-tbs' && <DoVuiTBS {...gameProps} />}
         </main>
       </div>
     );
@@ -169,6 +172,30 @@ export default function App() {
                 color="#c0392b"
                 onClick={() => setCurrentGame('cung-ong-ba')}
               />
+              <GameCard
+                emoji="🏢"
+                title="Đố Vui TBS"
+                description="Trả lời câu hỏi về văn hóa, dịch vụ và giá trị TBS Group — vừa chơi vừa học!"
+                color="#3498db"
+                onClick={() => setCurrentGame('do-vui-tbs')}
+              />
+            </div>
+
+            {/* Giá Trị Cốt Lõi TBS Group */}
+            <div className="culture-section">
+              <h3 className="section-title">Giá Trị Cốt Lõi TBS Group</h3>
+              <div className="culture-values-grid">
+                {TBS_CORE_VALUES.map((v, i) => (
+                  <div key={i} className="culture-value-card">
+                    <span className="culture-value-icon">{v.icon}</span>
+                    <h4 className="culture-value-title">{v.title}</h4>
+                    <p className="culture-value-desc">{v.desc}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="culture-tip-box">
+                <p>{getRandomCultureTip()}</p>
+              </div>
             </div>
           </div>
         )}

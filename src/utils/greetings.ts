@@ -54,6 +54,8 @@ const GENERIC_GREETINGS = [
   'Năm mới chúc bạn sức khỏe, hạnh phúc và thành công!',
   'Chúc năm mới an khang thịnh vượng, phúc lộc song toàn!',
   'Năm mới chúc bạn gặp nhiều may mắn, công việc thuận lợi!',
+  'TBS Group - Đoàn kết, Sáng tạo, Phát triển! Chúc bạn năm mới thắng lợi!',
+  'Tự hào là thành viên TBS Group! Chúc năm mới vạn sự hanh thông!',
 ];
 
 export function getGreeting(department: string): string {
