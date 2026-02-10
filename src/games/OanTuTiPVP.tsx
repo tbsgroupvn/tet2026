@@ -49,10 +49,12 @@ interface RoomState {
   winner: number | null;
 }
 
+import { getAccessToken } from '../utils/api';
+
 const API_BASE = '/api/pvp';
 
-async function apiCall(path: string, options?: RequestInit) {
-  const token = localStorage.getItem('tbs_access_token') || '';
+async function pvpApiCall(path: string, options?: RequestInit) {
+  const token = getAccessToken() || '';
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
@@ -88,7 +90,7 @@ export default function OanTuTiPVP({ player, onUpdate, onBack }: Props) {
     roomCodeRef.current = code;
     pollingRef.current = setInterval(async () => {
       try {
-        const data = await apiCall(`/room/${code}?playerId=${player.id}`);
+        const data = await pvpApiCall(`/room/${code}?playerId=${player.id}`);
         setRoom(data.room);
 
         // Update phase based on room status
@@ -110,7 +112,7 @@ export default function OanTuTiPVP({ player, onUpdate, onBack }: Props) {
     setLoading(true);
     setError('');
     try {
-      const data = await apiCall('/create', {
+      const data = await pvpApiCall('/create', {
         method: 'POST',
         body: JSON.stringify({ playerId: player.id, playerName: player.name }),
       });
@@ -131,7 +133,7 @@ export default function OanTuTiPVP({ player, onUpdate, onBack }: Props) {
     setLoading(true);
     setError('');
     try {
-      const data = await apiCall('/join', {
+      const data = await pvpApiCall('/join', {
         method: 'POST',
         body: JSON.stringify({ code: joinCode, playerId: player.id, playerName: player.name }),
       });
@@ -151,7 +153,7 @@ export default function OanTuTiPVP({ player, onUpdate, onBack }: Props) {
 
     playClick();
     try {
-      const data = await apiCall('/move', {
+      const data = await pvpApiCall('/move', {
         method: 'POST',
         body: JSON.stringify({ code: room.code, playerId: player.id, choice }),
       });
@@ -164,7 +166,7 @@ export default function OanTuTiPVP({ player, onUpdate, onBack }: Props) {
   const handleLeave = async () => {
     if (room) {
       try {
-        await apiCall('/leave', {
+        await pvpApiCall('/leave', {
           method: 'POST',
           body: JSON.stringify({ code: room.code, playerId: player.id }),
         });
