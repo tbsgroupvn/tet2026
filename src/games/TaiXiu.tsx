@@ -3,6 +3,7 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import { playWin, playLose, playDrum } from '../utils/sounds';
 import GameRules from '../components/GameRules';
 
 const RULES = [
@@ -42,6 +43,7 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
     setRolling(true);
     setResult(null);
     setGreeting('');
+    playDrum();
 
     let count = 0;
     intervalRef.current = setInterval(() => {
@@ -65,10 +67,12 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
 
         if (won) {
           setGreeting(getGreeting(player.department));
+          playWin();
           const updated = addCoins(player, bet, 'Tài Xỉu', `${choice === 'tai' ? 'Tài' : 'Xỉu'} - Tổng ${total} - Thắng +${bet}`);
           onUpdate(updated);
           setResult({ won: true, total, payout: bet });
         } else {
+          playLose();
           const updated = addCoins(player, -bet, 'Tài Xỉu', `${choice === 'tai' ? 'Tài' : 'Xỉu'} - Tổng ${total} - Thua -${bet}`);
           onUpdate(updated);
           setResult({ won: false, total, payout: -bet });

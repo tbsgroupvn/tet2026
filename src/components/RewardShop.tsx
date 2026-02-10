@@ -5,6 +5,7 @@ import { savePlayer } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { recordRewardRedemption, fetchRedemptions } from '../utils/api';
 import type { RedemptionRecord } from '../utils/api';
+import { playRedeem } from '../utils/sounds';
 
 interface RewardShopProps {
   player: Player;
@@ -97,6 +98,8 @@ export default function RewardShop({ player, onUpdate }: RewardShopProps) {
     onUpdate(updated);
     setShowPaymentForm(null);
     setGreeting(getGreeting(player.department));
+
+    playRedeem();
 
     // Record on server with payment info — get back the record with ID
     const record = await recordRewardRedemption(

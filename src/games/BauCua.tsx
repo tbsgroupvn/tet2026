@@ -3,6 +3,7 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import { playWin, playLose, playDrum } from '../utils/sounds';
 import GameRules from '../components/GameRules';
 
 const RULES = [
@@ -69,6 +70,7 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
     if (!canPlay('bau-cua')) return;
     setRolling(true);
     setResult(null);
+    playDrum();
 
     let count = 0;
     intervalRef.current = setInterval(() => {
@@ -107,8 +109,10 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
         setResult({ won: netResult, details });
         if (netResult > 0) {
           setGreeting(getGreeting(player.department));
+          playWin();
         } else {
           setGreeting('');
+          if (netResult < 0) playLose();
         }
 
         if (netResult !== 0) {

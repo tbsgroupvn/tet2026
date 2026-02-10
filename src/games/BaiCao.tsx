@@ -3,6 +3,7 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import { playWin, playLose, playChime } from '../utils/sounds';
 import GameRules from '../components/GameRules';
 
 const RULES = [
@@ -112,12 +113,16 @@ export default function BaiCao({ player, onUpdate, onBack }: BaiCaoProps) {
 
       if (won) {
         setGreeting(getGreeting(player.department));
+        playWin();
         const coins = pScore >= 8 ? bet * 2 : bet;
         const updated = addCoins(player, coins, 'Bài Cào', `${getScoreName(pScore)} thắng ${getScoreName(dScore)} → +${coins} xu`);
         onUpdate(updated);
       } else if (!tie) {
+        playLose();
         const updated = addCoins(player, -bet, 'Bài Cào', `${getScoreName(pScore)} thua ${getScoreName(dScore)} → -${bet} xu`);
         onUpdate(updated);
+      } else {
+        playChime();
       }
 
       recordPlay('bai-cao');

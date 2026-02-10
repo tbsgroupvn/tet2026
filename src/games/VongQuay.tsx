@@ -3,6 +3,7 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import { playSpinTick, playWin, playLose } from '../utils/sounds';
 import GameRules from '../components/GameRules';
 
 const RULES = [
@@ -64,6 +65,9 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
 
     setSpinning(true);
     setResult(null);
+    // Tick sound during spin
+    const tickInterval = setInterval(() => playSpinTick(), 120);
+    setTimeout(() => clearInterval(tickInterval), 3500);
 
     // Deduct spin cost
     const afterCost = addCoins(player, -SPIN_COST, 'Vòng Quay', `Phí quay: -${SPIN_COST} xu`);
@@ -91,10 +95,12 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
       setResult(prize);
       if (prize.coins > 0) {
         setGreeting(getGreeting(player.department));
+        playWin();
         const updated = addCoins(afterCost, prize.coins, 'Vòng Quay', `Trúng ${prize.label}`);
         onUpdate(updated);
       } else {
         setGreeting('');
+        playLose();
       }
       setSpinning(false);
     }, 4000);

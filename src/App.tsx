@@ -18,7 +18,10 @@ import XinXam from './games/XinXam';
 import CungOngBa from './games/CungOngBa';
 import DoVuiTBS from './games/DoVuiTBS';
 import AdminDashboard from './components/AdminDashboard';
+import MouseTrail from './components/MouseTrail';
+import SoundControl from './components/SoundControl';
 import { TBS_CORE_VALUES, getRandomCultureTip } from './utils/tbsQuiz';
+import { playClick, playGong } from './utils/sounds';
 import './App.css';
 
 type Page = 'home' | 'rewards' | 'leaderboard';
@@ -46,16 +49,23 @@ export default function App() {
   const handleLogin = (name: string, department: string) => {
     const p = createPlayer(name, department);
     setPlayer(p);
+    playGong();
   };
 
   const handlePlayerUpdate = (updated: Player) => {
     setPlayer(updated);
   };
 
+  const selectGame = (game: GameType) => {
+    playClick();
+    setCurrentGame(game);
+  };
+
   // Admin dashboard (accessible via /#admin)
   if (showAdmin) {
     return (
       <div className="app">
+        <MouseTrail />
         <AdminDashboard />
         <button
           className="admin-exit-btn"
@@ -70,9 +80,11 @@ export default function App() {
   if (!player) {
     return (
       <div className="app">
+        <MouseTrail />
         <Fireworks />
         <FallingElements />
         <LoginScreen onLogin={handleLogin} />
+        <SoundControl />
       </div>
     );
   }
@@ -86,8 +98,10 @@ export default function App() {
 
     return (
       <div className="app">
+        <MouseTrail />
         <Fireworks />
         <Header player={player} onNavigate={(p) => { setCurrentGame(null); setCurrentPage(p as Page); }} currentPage={currentPage} />
+        <SoundControl />
         <main className="main-content">
           {currentGame === 'lac-li-xi' && <LacLiXi {...gameProps} />}
           {currentGame === 'bau-cua' && <BauCua {...gameProps} />}
@@ -105,9 +119,11 @@ export default function App() {
 
   return (
     <div className="app">
+      <MouseTrail />
       <Fireworks />
       <FallingElements />
       <Header player={player} onNavigate={(p) => setCurrentPage(p as Page)} currentPage={currentPage} />
+      <SoundControl />
       <main className="main-content">
         {currentPage === 'home' && (
           <div className="home-page">
@@ -147,63 +163,63 @@ export default function App() {
                 title="Lắc Lì Xì"
                 description="Lắc lì xì nhận xu may mắn! Mỗi phong bao là một bất ngờ!"
                 color="#e74c3c"
-                onClick={() => setCurrentGame('lac-li-xi')}
+                onClick={() => selectGame('lac-li-xi')}
               />
               <GameCard
                 emoji="🎲"
                 title="Bầu Cua Tôm Cá"
                 description="Game dân gian kinh điển! Đặt cược và lắc xúc xắc!"
                 color="#f39c12"
-                onClick={() => setCurrentGame('bau-cua')}
+                onClick={() => selectGame('bau-cua')}
               />
               <GameCard
                 emoji="🎡"
                 title="Vòng Quay Tài Lộc"
                 description="Quay vòng quay may mắn! Cơ hội trúng lớn!"
                 color="#e91e63"
-                onClick={() => setCurrentGame('vong-quay')}
+                onClick={() => selectGame('vong-quay')}
               />
               <GameCard
                 emoji="🎲"
                 title="Tài Xỉu"
                 description="Đoán tổng 3 xúc xắc Tài hay Xỉu! Đoán đúng thắng gấp đôi!"
                 color="#9b59b6"
-                onClick={() => setCurrentGame('tai-xiu')}
+                onClick={() => selectGame('tai-xiu')}
               />
               <GameCard
                 emoji="🃏"
                 title="Bài Cào"
                 description="Chia 3 lá bài, so điểm với nhà cái! Được 8-9 nút thắng đậm!"
                 color="#2ecc71"
-                onClick={() => setCurrentGame('bai-cao')}
+                onClick={() => selectGame('bai-cao')}
               />
               <GameCard
                 emoji="🔮"
                 title="Bốc Quẻ Đầu Năm"
                 description="Bốc quẻ xem vận mệnh năm mới! Lời tiên tri và xu thưởng!"
                 color="#e67e22"
-                onClick={() => setCurrentGame('boc-que')}
+                onClick={() => selectGame('boc-que')}
               />
               <GameCard
                 emoji="🛕"
                 title="Xin Xăm Chùa"
                 description="Lắc ống xăm đầu năm! Thẻ xăm kèm thơ và lời giải!"
                 color="#1abc9c"
-                onClick={() => setCurrentGame('xin-xam')}
+                onClick={() => selectGame('xin-xam')}
               />
               <GameCard
                 emoji="🪷"
                 title="Cúng Ông Bà"
                 description="Lật tìm cặp lễ vật bày mâm cỗ cúng Tổ Tiên! Trí nhớ tốt = nhiều xu!"
                 color="#c0392b"
-                onClick={() => setCurrentGame('cung-ong-ba')}
+                onClick={() => selectGame('cung-ong-ba')}
               />
               <GameCard
                 emoji="🏢"
                 title="Đố Vui TBS"
                 description="Trả lời câu hỏi về văn hóa, dịch vụ và giá trị TBS Group — vừa chơi vừa học!"
                 color="#3498db"
-                onClick={() => setCurrentGame('do-vui-tbs')}
+                onClick={() => selectGame('do-vui-tbs')}
               />
             </div>
 
