@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
@@ -46,6 +46,11 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
   const [showHistory, setShowHistory] = useState<{ coins: number; label: string }[]>([]);
   const [greeting, setGreeting] = useState('');
   const [remaining, setRemaining] = useState(getRemainingPlays('lac-li-xi'));
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, []);
 
   const handleShake = useCallback(() => {
     if (isShaking) return;
@@ -54,7 +59,7 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
     setOpened(false);
     setResult(null);
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       const envelope = getRandomEnvelope();
       setResult(envelope);
       setIsShaking(false);

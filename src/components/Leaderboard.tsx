@@ -34,16 +34,25 @@ export default function Leaderboard({ currentPlayer }: LeaderboardProps) {
     let mounted = true;
     async function load() {
       setLoading(true);
-      const [lb, st] = await Promise.all([fetchLeaderboard(), fetchStats()]);
-      if (mounted) {
-        if (lb.length > 0) {
-          setServerPlayers(lb);
-          setUseServer(true);
-        } else {
+      try {
+        const [lb, st] = await Promise.all([fetchLeaderboard(), fetchStats()]);
+        if (mounted) {
+          if (lb.length > 0) {
+            setServerPlayers(lb);
+            setUseServer(true);
+          } else {
+            setUseServer(false);
+          }
+          setStats(st);
+        }
+      } catch {
+        if (mounted) {
           setUseServer(false);
         }
-        setStats(st);
-        setLoading(false);
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
     }
     load();

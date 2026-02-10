@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
@@ -30,6 +30,11 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
   const [result, setResult] = useState<{ won: boolean; total: number; payout: number } | null>(null);
   const [greeting, setGreeting] = useState('');
   const [remaining, setRemaining] = useState(getRemainingPlays('tai-xiu'));
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, []);
 
   const roll = useCallback(() => {
     if (rolling || !choice || bet > player.totalCoins) return;
@@ -39,7 +44,7 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
     setGreeting('');
 
     let count = 0;
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setDice([
         Math.ceil(Math.random() * 6),
         Math.ceil(Math.random() * 6),
@@ -47,7 +52,7 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
       ]);
       count++;
       if (count > 15) {
-        clearInterval(interval);
+        clearInterval(intervalRef.current!);
         const final = [
           Math.ceil(Math.random() * 6),
           Math.ceil(Math.random() * 6),

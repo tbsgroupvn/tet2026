@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
@@ -109,6 +109,11 @@ export default function XinXam({ player, onUpdate, onBack }: XinXamProps) {
   const [greeting, setGreeting] = useState('');
   const [coinAwarded, setCoinAwarded] = useState(!canPlay('xin-xam'));
   const remaining = getRemainingPlays('xin-xam');
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, []);
 
   const handleSubmitInfo = () => {
     if (!fullName.trim() || !birthDay || !birthMonth || !birthYear) return;
@@ -121,16 +126,18 @@ export default function XinXam({ player, onUpdate, onBack }: XinXamProps) {
     setResult(null);
     setGreeting('');
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       const xam = getRandomXam();
       setResult(xam);
-      setGreeting(getGreeting(player.department));
 
       if (!coinAwarded && canPlay('xin-xam')) {
         recordPlay('xin-xam');
         const updated = addCoins(player, xam.coins, 'Xin Xăm', `Xăm số ${xam.number}: +${xam.coins} xu`);
         onUpdate(updated);
         setCoinAwarded(true);
+        setGreeting(getGreeting(player.department));
+      } else {
+        setGreeting('');
       }
 
       setShaking(false);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
@@ -108,6 +108,11 @@ export default function BocQue({ player, onUpdate, onBack }: BocQueProps) {
   const [greeting, setGreeting] = useState('');
   const [coinAwarded, setCoinAwarded] = useState(!canPlay('boc-que'));
   const remaining = getRemainingPlays('boc-que');
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, []);
 
   const handleSubmitInfo = () => {
     if (!fullName.trim() || !birthDay || !birthMonth || !birthYear) return;
@@ -120,16 +125,18 @@ export default function BocQue({ player, onUpdate, onBack }: BocQueProps) {
     setResult(null);
     setGreeting('');
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       const que = getRandomQue();
       setResult(que);
-      setGreeting(getGreeting(player.department));
 
       if (!coinAwarded && canPlay('boc-que')) {
         recordPlay('boc-que');
         const updated = addCoins(player, que.coins, 'Bốc Quẻ', `${que.name}: +${que.coins} xu`);
         onUpdate(updated);
         setCoinAwarded(true);
+        setGreeting(getGreeting(player.department));
+      } else {
+        setGreeting('');
       }
 
       setShaking(false);

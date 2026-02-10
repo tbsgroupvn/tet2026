@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
@@ -74,6 +74,11 @@ export default function BaiCao({ player, onUpdate, onBack }: BaiCaoProps) {
   const [result, setResult] = useState<{ won: boolean; tie: boolean; playerScore: number; dealerScore: number } | null>(null);
   const [greeting, setGreeting] = useState('');
   const [remaining, setRemaining] = useState(getRemainingPlays('bai-cao'));
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, []);
 
   const deal = useCallback(() => {
     if (dealing || bet > player.totalCoins) return;
@@ -90,7 +95,7 @@ export default function BaiCao({ player, onUpdate, onBack }: BaiCaoProps) {
     setPlayerCards(pCards);
     setDealerCards(dCards);
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setRevealed(true);
       const pScore = getScore(pCards);
       const dScore = getScore(dCards);

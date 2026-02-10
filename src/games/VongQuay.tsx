@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
@@ -51,6 +51,11 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
   const [remaining, setRemaining] = useState(getRemainingPlays('vong-quay'));
   const wheelRef = useRef<SVGGElement>(null);
   const baseRotationRef = useRef(0);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, []);
 
   const spin = useCallback(() => {
     if (spinning) return;
@@ -81,7 +86,7 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
     setRotation(newRotation);
     baseRotationRef.current = newRotation;
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       const prize = SLICES[winnerIdx];
       setResult(prize);
       if (prize.coins > 0) {

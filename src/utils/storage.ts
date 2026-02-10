@@ -44,7 +44,7 @@ export function createPlayer(name: string, department: string): Player {
 export function addCoins(player: Player, coins: number, game: string, details: string): Player {
   const updated = {
     ...player,
-    totalCoins: player.totalCoins + coins,
+    totalCoins: Math.max(0, player.totalCoins + coins),
     gamesPlayed: player.gamesPlayed + 1,
   };
   savePlayer(updated);

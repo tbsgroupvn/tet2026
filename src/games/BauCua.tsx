@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
@@ -40,6 +40,11 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
   const [betAmount, setBetAmount] = useState(10);
   const [greeting, setGreeting] = useState('');
   const [remaining, setRemaining] = useState(getRemainingPlays('bau-cua'));
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, []);
 
   const totalBet = Object.values(bets).reduce((s, v) => s + v, 0);
 
@@ -66,7 +71,7 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
     setResult(null);
 
     let count = 0;
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setDice([
         SYMBOLS[Math.floor(Math.random() * 6)].id,
         SYMBOLS[Math.floor(Math.random() * 6)].id,
@@ -74,7 +79,7 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
       ]);
       count++;
       if (count > 15) {
-        clearInterval(interval);
+        clearInterval(intervalRef.current!);
         const finalDice = [
           SYMBOLS[Math.floor(Math.random() * 6)].id,
           SYMBOLS[Math.floor(Math.random() * 6)].id,
