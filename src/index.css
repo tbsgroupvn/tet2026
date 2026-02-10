@@ -4046,6 +4046,96 @@ button:disabled {
   border-top: 1px solid rgba(255, 215, 0, 0.15);
 }
 
+.culture-section-author {
+  text-align: center;
+  color: rgba(255, 215, 0, 0.7);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+/* 3 Văn Hóa Doanh Nghiệp Hùng Mạnh */
+.three-cultures-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.three-culture-card {
+  background: linear-gradient(145deg, rgba(45, 8, 8, 0.9), rgba(26, 10, 10, 0.9));
+  border: 2px solid rgba(255, 215, 0, 0.25);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+}
+
+.three-culture-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.three-culture-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(255, 215, 0, 0.2), 0 0 15px rgba(255, 215, 0, 0.08);
+}
+
+.three-culture-card:hover::before {
+  opacity: 1;
+}
+
+.three-culture-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+.three-culture-card:hover .three-culture-icon {
+  animation: float 1.5s ease-in-out infinite;
+}
+
+.three-culture-title {
+  color: var(--gold);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.three-culture-subtitle {
+  color: #ffd700;
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-bottom: 0.8rem;
+  opacity: 0.8;
+}
+
+.three-culture-desc {
+  color: #ffcdd2;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin-bottom: 0.6rem;
+}
+
+.three-culture-detail {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  border-top: 1px solid rgba(255, 215, 0, 0.1);
+  padding-top: 0.6rem;
+  margin-top: 0.3rem;
+}
+
 .culture-values-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -4441,6 +4531,12 @@ button:disabled {
 }
 
 @media (max-width: 480px) {
+  .three-cultures-grid {
+    grid-template-columns: 1fr;
+  }
+  .three-culture-card {
+    padding: 1.2rem;
+  }
   .culture-values-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.8rem;

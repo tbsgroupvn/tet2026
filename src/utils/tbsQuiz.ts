@@ -131,6 +131,119 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'team',
     coins: 15,
   },
+  // === 3 VĂN HÓA DOANH NGHIỆP HÙNG MẠNH (GS Phan Văn Trường) ===
+  {
+    id: 21,
+    question: 'Theo GS Phan Văn Trường, "Sếp" trong một doanh nghiệp hùng mạnh là ai?',
+    options: [
+      'Tổng Giám Đốc',
+      'Lợi ích tối đa của công ty',
+      'Người có nhiều cổ phiếu nhất',
+      'Trưởng phòng ban',
+    ],
+    correct: 1,
+    explanation: 'Trong Văn hóa Bình đẳng, lợi ích tối đa của công ty chính là "Sếp" — mọi quyết định đều phải dựa trên 100% lợi ích chung, bất kể vị trí.',
+    category: 'culture',
+    coins: 25,
+  },
+  {
+    id: 22,
+    question: 'Văn hóa Bình đẳng trong doanh nghiệp hùng mạnh thể hiện qua điều gì?',
+    options: [
+      'Ai cũng có lương bằng nhau',
+      'Dù ở vị trí nào cũng phải đi theo lợi ích tối đa của công ty',
+      'Mọi người đều là sếp',
+      'Không có cấp bậc trong công ty',
+    ],
+    correct: 1,
+    explanation: 'Văn hóa Bình đẳng có nghĩa mọi người — từ lãnh đạo cao nhất đến nhân viên — đều cùng đi trên một con thuyền, hướng về một chí hướng và chiến lược chung.',
+    category: 'culture',
+    coins: 25,
+  },
+  {
+    id: 23,
+    question: 'Văn hóa Báo cáo theo GS Phan Văn Trường là gì?',
+    options: [
+      'Nhân viên gửi báo cáo cho sếp mỗi tuần',
+      'Truyền thông toàn diện — tất cả mọi người cùng nhận thông tin, báo cáo cho nhau',
+      'Chỉ báo cáo khi có vấn đề',
+      'Sếp thông báo quyết định cho nhân viên',
+    ],
+    correct: 1,
+    explanation: 'Văn hóa Báo cáo là truyền thông toàn diện theo thời gian thật. Cả công ty đều biết chuyện xảy ra, mỗi người đều chia sẻ và đóng góp phiên bản tốt nhất cho khách hàng.',
+    category: 'culture',
+    coins: 25,
+  },
+  {
+    id: 24,
+    question: 'Tại sao Văn hóa Báo cáo toàn diện giúp công ty phát triển nhanh?',
+    options: [
+      'Vì sếp kiểm soát mọi thứ',
+      'Vì ai cũng biết chuyện xảy ra, cả công ty đóng góp phiên bản tốt nhất',
+      'Vì nhân viên sợ bị phạt',
+      'Vì có nhiều cuộc họp hơn',
+    ],
+    correct: 1,
+    explanation: 'Khi tất cả tập thể cùng chia sẻ thông tin, mỗi cá nhân đóng góp quan điểm riêng — cả tích cực lẫn điều cần cải thiện — giúp công ty phát triển toàn diện.',
+    category: 'culture',
+    coins: 20,
+  },
+  {
+    id: 25,
+    question: '"Nice and Professional" — Ôn hòa và Chuyên nghiệp — có nghĩa là gì?',
+    options: [
+      'Luôn cười nói vui vẻ',
+      'Dùng lý trí giải quyết vấn đề, làm việc tốt nhất có thể mà không gắt gỏng',
+      'Mặc đồ đẹp đi làm',
+      'Không bao giờ phản đối ý kiến người khác',
+    ],
+    correct: 1,
+    explanation: 'Ôn hòa là dùng lý trí thay vì cảm xúc. Chuyên nghiệp là luôn theo đuổi chất lượng cao nhất, không hời hợt. Kết hợp cả hai tạo nên môi trường tích cực và sáng tạo.',
+    category: 'culture',
+    coins: 25,
+  },
+  {
+    id: 26,
+    question: 'Theo GS Phan Văn Trường, 3 văn hóa tạo nên doanh nghiệp hùng mạnh là gì?',
+    options: [
+      'Văn hóa cạnh tranh, Văn hóa lợi nhuận, Văn hóa mệnh lệnh',
+      'Văn hóa Bình đẳng, Văn hóa Báo cáo, Văn hóa Ôn hòa & Chuyên nghiệp',
+      'Văn hóa kỷ luật, Văn hóa phạt, Văn hóa thưởng',
+      'Văn hóa doanh thu, Văn hóa tiết kiệm, Văn hóa mở rộng',
+    ],
+    correct: 1,
+    explanation: 'Ba trụ cột văn hóa: Bình đẳng (lợi ích công ty là sếp), Báo cáo (truyền thông toàn diện), và Ôn hòa & Chuyên nghiệp (Nice and Professional).',
+    category: 'culture',
+    coins: 30,
+  },
+  {
+    id: 27,
+    question: 'Vì sao người vừa ôn hòa vừa chuyên nghiệp sẽ phát triển rất nhanh?',
+    options: [
+      'Vì được sếp yêu quý',
+      'Vì họ vừa làm việc khách quan, xuất sắc mà vẫn duy trì tinh thần tích cực, sáng tạo',
+      'Vì ít bị stress',
+      'Vì không ai dám phản đối họ',
+    ],
+    correct: 1,
+    explanation: 'Kết hợp ôn hòa (lý trí, bình tĩnh) với chuyên nghiệp (không hời hợt, theo đuổi hoàn hảo) tạo nên con người vừa giỏi vừa dễ hợp tác — chìa khóa thành công.',
+    category: 'culture',
+    coins: 25,
+  },
+  {
+    id: 28,
+    question: 'Trong Văn hóa Bình đẳng, lãnh đạo cấp cao ân cần với nhân viên vì lý do gì?',
+    options: [
+      'Vì muốn nhân viên làm thêm giờ',
+      'Vì họ đi trên cùng một con thuyền, hướng về cùng một chiến lược',
+      'Vì quy định công ty bắt buộc',
+      'Vì sợ nhân viên nghỉ việc',
+    ],
+    correct: 1,
+    explanation: 'Khi mọi người cùng hướng về lợi ích tối đa của công ty, lãnh đạo và nhân viên là đồng đội trên cùng một con thuyền — sự ân cần là tự nhiên, không gượng ép.',
+    category: 'culture',
+    coins: 20,
+  },
   // === TẾT & VĂN HÓA ===
   {
     id: 11,
@@ -264,29 +377,57 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
 ];
 
+// 3 Văn hóa tạo nên doanh nghiệp hùng mạnh — GS Phan Văn Trường
+export const TBS_THREE_CULTURES = [
+  {
+    icon: '⚖️',
+    title: 'Văn Hóa Bình Đẳng',
+    subtitle: 'Lợi ích tối đa của công ty là Sếp',
+    desc: 'Mọi quyết định đều dựa trên lợi ích tối đa của công ty — dù bạn ở vị trí nào cũng đi theo cùng một lộ trình, một chiến lược mà tất cả đồng tình.',
+    detail: 'Văn hóa bình đẳng giúp nhân viên thoải mái vì mọi người cùng làm việc trên một tiêu chuẩn chung. Lãnh đạo cấp cao ân cần với nhân viên vì họ đi trên cùng một con thuyền. Ngay cả người có 100% cổ phiếu cũng không có quyền tự quyết nếu đi ngược lợi ích chung.',
+  },
+  {
+    icon: '📢',
+    title: 'Văn Hóa Báo Cáo',
+    subtitle: 'Truyền thông toàn diện, kịp thời',
+    desc: 'Tất cả mọi người cùng nhận thông tin một lúc — ai cũng báo cáo và chia sẻ để cả công ty hiểu công việc đang đi về đâu.',
+    detail: 'Không chỉ báo cáo lên cấp trên mà là truyền thông toàn diện theo thời gian thật. Mỗi cá nhân đóng góp cảm nhận riêng, phản ánh tích cực hoặc điều cần cải thiện. Công ty phát triển nhanh vì cả tập thể đóng góp phiên bản tốt nhất cho khách hàng.',
+  },
+  {
+    icon: '🎯',
+    title: 'Văn Hóa Ôn Hòa & Chuyên Nghiệp',
+    subtitle: 'Nice and Professional',
+    desc: 'Ôn hòa là dùng lý trí thay vì cảm xúc. Chuyên nghiệp là làm việc tốt nhất, không bao giờ hời hợt — kết hợp cả hai tạo nên sự xuất sắc.',
+    detail: 'Người ôn hòa tạo môi trường dễ chịu, người chuyên nghiệp theo đuổi sự hoàn hảo. Ai làm được cả hai sẽ phát triển rất nhanh vì vừa khách quan, chuyên nghiệp mà vẫn duy trì tinh thần tích cực, sáng tạo.',
+  },
+];
+
 // Core values for display
 export const TBS_CORE_VALUES = [
+  { icon: '⚖️', title: 'Bình Đẳng', desc: 'Lợi ích tối đa của công ty là Sếp — mọi người cùng một tiêu chuẩn, một lộ trình' },
+  { icon: '📢', title: 'Báo Cáo Kịp Thời', desc: 'Truyền thông toàn diện — ai cũng chia sẻ, ai cũng nắm bắt thông tin' },
+  { icon: '🎯', title: 'Ôn Hòa & Chuyên Nghiệp', desc: 'Dùng lý trí, làm việc xuất sắc, không hời hợt, không gắt gỏng' },
   { icon: '🤝', title: 'Đoàn Kết', desc: 'Phối hợp liên phòng ban, hỗ trợ lẫn nhau như một gia đình' },
   { icon: '💡', title: 'Sáng Tạo', desc: 'Luôn tìm kiếm giải pháp mới, cải tiến quy trình làm việc' },
-  { icon: '🚀', title: 'Phát Triển', desc: 'Đầu tư phát triển con người, nâng cao năng lực toàn diện' },
-  { icon: '⭐', title: 'Chất Lượng', desc: 'Cam kết chất lượng sản phẩm và dịch vụ xuất sắc' },
   { icon: '❤️', title: 'Tận Tâm', desc: 'Phục vụ khách hàng bằng cả trái tim và sự chuyên nghiệp' },
-  { icon: '🌱', title: 'Bền Vững', desc: 'Xây dựng giá trị lâu dài cho nhân viên, khách hàng và cộng đồng' },
 ];
 
 export const CULTURE_TIPS = [
-  '💡 Bạn biết không? TBS Group luôn đề cao tinh thần "Đoàn kết - Sáng tạo - Phát triển" trong mọi hoạt động!',
+  '⚖️ Văn hóa Bình đẳng: Lợi ích tối đa của công ty là Sếp — dù bạn ở vị trí nào cũng đi theo cùng một lộ trình!',
+  '📢 Văn hóa Báo cáo: Tất cả mọi người cùng nhận thông tin một lúc — truyền thông toàn diện, kịp thời!',
+  '🎯 Nice and Professional: Dùng lý trí, làm việc xuất sắc, không hời hợt mà vẫn duy trì tinh thần tích cực!',
+  '⚖️ GS Phan Văn Trường: "Ai làm Sếp? Lợi ích tối đa công ty là Sếp!" — Đó là tinh thần bình đẳng, ai cũng phải tuân theo.',
+  '📢 Công ty phát triển nhanh khi ai cũng biết chuyện xảy ra — cả tập thể đóng góp phiên bản tốt nhất cho khách hàng!',
+  '🎯 Người vừa ôn hòa vừa chuyên nghiệp phát triển rất nhanh vì họ vừa giỏi vừa tạo nên môi trường tích cực!',
   '🤝 Tại TBS, mỗi phòng ban là một mắt xích quan trọng. Sự phối hợp chặt chẽ tạo nên sức mạnh tập thể!',
   '⭐ Chất lượng & Uy tín là nền tảng xây dựng niềm tin. TBS cam kết mang đến sản phẩm và dịch vụ tốt nhất!',
   '🏠 Senliving - thương hiệu nội thất & gia dụng của TBS, mang đến không gian sống đẹp cho gia đình Việt!',
   '🌍 Phòng XNK là cầu nối TBS với thế giới - đưa sản phẩm chất lượng quốc tế đến tay người tiêu dùng!',
   '❤️ Phòng CSKH TBS luôn lắng nghe và thấu hiểu - vì sự hài lòng của khách hàng là niềm vui của chúng ta!',
-  '📦 Bộ Phận Kho - những anh hùng thầm lặng đảm bảo hàng hóa lưu thông nhanh chóng và chính xác!',
   '💪 Phòng Kinh Doanh TBS - những chiến binh tiên phong mở rộng thị trường và xây dựng đối tác bền vững!',
-  '🎨 Phòng Marketing - bộ mặt thương hiệu TBS, nơi sáng tạo không giới hạn và câu chuyện thương hiệu được kể!',
   '👥 Phòng Nhân Sự - trái tim của TBS, nơi chăm lo và phát triển tài sản quý giá nhất: Con Người!',
-  '🎯 Tại TBS, mỗi nhân viên đều có cơ hội phát triển toàn diện: chuyên môn, kỹ năng mềm và giá trị cá nhân!',
-  '🏆 Thành công của TBS Group đến từ sự đoàn kết, nỗ lực không ngừng của tất cả anh chị em nhân viên!',
+  '🏆 3 văn hóa hùng mạnh: Bình đẳng, Báo cáo kịp thời, Ôn hòa & Chuyên nghiệp — nền tảng phát triển TBS Group!',
+  '⚖️ Lãnh đạo ân cần với nhân viên vì họ đi trên cùng một con thuyền, hướng về cùng một chiến lược chung!',
 ];
 
 export function getRandomQuestions(count: number): QuizQuestion[] {

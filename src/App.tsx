@@ -24,7 +24,7 @@ import SoundControl from './components/SoundControl';
 import TetCountdown from './components/TetCountdown';
 import Achievements from './components/Achievements';
 import LiXiBanBe from './components/LiXiBanBe';
-import { TBS_CORE_VALUES, getRandomCultureTip } from './utils/tbsQuiz';
+import { TBS_CORE_VALUES, TBS_THREE_CULTURES, getRandomCultureTip } from './utils/tbsQuiz';
 import { playClick, playGong } from './utils/sounds';
 import './App.css';
 
@@ -237,9 +237,23 @@ export default function App() {
               />
             </div>
 
-            {/* Giá Trị Cốt Lõi TBS Group */}
+            {/* 3 Văn Hóa Doanh Nghiệp Hùng Mạnh — GS Phan Văn Trường */}
             <div className="culture-section">
-              <h3 className="section-title">Giá Trị Cốt Lõi TBS Group</h3>
+              <h3 className="section-title">3 Văn Hóa Tạo Nên Doanh Nghiệp Hùng Mạnh</h3>
+              <p className="culture-section-author">Theo GS Phan Văn Trường</p>
+              <div className="three-cultures-grid">
+                {TBS_THREE_CULTURES.map((c, i) => (
+                  <div key={i} className="three-culture-card">
+                    <span className="three-culture-icon">{c.icon}</span>
+                    <h4 className="three-culture-title">{c.title}</h4>
+                    <p className="three-culture-subtitle">{c.subtitle}</p>
+                    <p className="three-culture-desc">{c.desc}</p>
+                    <p className="three-culture-detail">{c.detail}</p>
+                  </div>
+                ))}
+              </div>
+
+              <h3 className="section-title" style={{ marginTop: '2rem' }}>Giá Trị Cốt Lõi TBS Group</h3>
               <div className="culture-values-grid">
                 {TBS_CORE_VALUES.map((v, i) => (
                   <div key={i} className="culture-value-card">
