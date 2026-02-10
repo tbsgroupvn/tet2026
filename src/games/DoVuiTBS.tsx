@@ -7,11 +7,11 @@ import type { QuizQuestion } from '../utils/tbsQuiz';
 import GameRules from '../components/GameRules';
 
 const RULES = [
-  'Mỗi lượt chơi gồm 5 câu hỏi về văn hóa, dịch vụ và giá trị TBS Group.',
+  'Mỗi lượt chơi gồm 10 câu hỏi về văn hóa, dịch vụ và giá trị TBS Group.',
   'Đọc câu hỏi và chọn 1 trong 4 đáp án. Bạn có 20 giây cho mỗi câu.',
-  'Trả lời đúng: nhận xu thưởng (10-20 xu tùy độ khó). Trả lời sai: không mất xu.',
+  'Trả lời đúng: nhận xu thưởng (10-30 xu tùy độ khó). Trả lời sai: không mất xu.',
   'Sau mỗi câu sẽ hiển thị giải thích giúp bạn hiểu thêm về công ty.',
-  'Hoàn thành 5 câu = 1 lượt. Giới hạn 5 lượt mỗi ngày.',
+  'Hoàn thành 10 câu = 1 lượt. Giới hạn 5 lượt mỗi ngày.',
   'Hãy chơi để hiểu thêm về TBS Group - nơi bạn làm việc mỗi ngày!',
 ];
 
@@ -21,7 +21,7 @@ interface DoVuiTBSProps {
   onBack: () => void;
 }
 
-const QUESTIONS_PER_ROUND = 5;
+const QUESTIONS_PER_ROUND = 10;
 const TIME_PER_QUESTION = 20;
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -136,7 +136,7 @@ export default function DoVuiTBS({ player, onUpdate, onBack }: DoVuiTBSProps) {
           <div className="quiz-start">
             <div className="quiz-start-icon">🏢</div>
             <h3>Bạn hiểu TBS Group bao nhiêu?</h3>
-            <p>Trả lời {QUESTIONS_PER_ROUND} câu hỏi về công ty để nhận xu và khám phá thêm về nơi bạn làm việc!</p>
+            <p>Trả lời 10 câu hỏi về công ty để nhận xu và khám phá thêm về nơi bạn làm việc!</p>
             <div className="quiz-categories">
               {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
                 <span key={key} className="quiz-category-tag">{label}</span>
@@ -227,7 +227,7 @@ export default function DoVuiTBS({ player, onUpdate, onBack }: DoVuiTBSProps) {
         {phase === 'summary' && (
           <div className="quiz-summary">
             <div className="quiz-summary-icon">
-              {score.correct >= 4 ? '🏆' : score.correct >= 3 ? '🌟' : score.correct >= 2 ? '👍' : '📚'}
+              {score.correct >= 8 ? '🏆' : score.correct >= 6 ? '🌟' : score.correct >= 4 ? '👍' : '📚'}
             </div>
             <h3>Kết Quả Đố Vui</h3>
             <div className="quiz-summary-stats">
@@ -242,11 +242,13 @@ export default function DoVuiTBS({ player, onUpdate, onBack }: DoVuiTBSProps) {
             </div>
             <div className="quiz-summary-msg">
               {score.correct === questions.length ? (
-                <p>🎉 Xuất sắc! Bạn hiểu rất rõ về TBS Group! Tự hào là thành viên TBS!</p>
-              ) : score.correct >= 3 ? (
-                <p>🌟 Tuyệt vời! Bạn nắm khá rõ về công ty. Hãy chơi thêm để hiểu hơn nhé!</p>
-              ) : score.correct >= 1 ? (
-                <p>👍 Không sao! Mỗi câu hỏi là một bài học. Hãy thử lại để biết thêm về TBS!</p>
+                <p>🎉 Xuất sắc! 10/10 — Bạn hiểu rất rõ về TBS Group! Tự hào là thành viên TBS!</p>
+              ) : score.correct >= 8 ? (
+                <p>🏆 Tuyệt vời! Bạn am hiểu sâu sắc về TBS Group! Tiếp tục phát huy nhé!</p>
+              ) : score.correct >= 6 ? (
+                <p>🌟 Khá lắm! Bạn nắm khá rõ về công ty. Hãy chơi thêm để hiểu hơn nhé!</p>
+              ) : score.correct >= 4 ? (
+                <p>👍 Không tệ! Mỗi câu hỏi là một bài học. Hãy thử lại để biết thêm về TBS!</p>
               ) : (
                 <p>📚 Đây là cơ hội để hiểu thêm về TBS Group! Hãy đọc giải thích và thử lại nhé!</p>
               )}
