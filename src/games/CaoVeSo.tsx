@@ -5,6 +5,7 @@ import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 import { playWin, playLose, playCoinCollect } from '../utils/sounds';
 import GameRules from '../components/GameRules';
+import CultureTipCard from '../components/CultureTipCard';
 
 const RULES = [
   'Mỗi vé tốn 10 xu để cào',
@@ -262,6 +263,8 @@ export default function CaoVeSo({ player, onUpdate, onBack }: GameProps) {
             <p className="greeting-text">🌸 {greeting}</p>
           </div>
         )}
+
+        {greeting && <CultureTipCard />}
 
         {history.length > 0 && (
           <div className="game-history">

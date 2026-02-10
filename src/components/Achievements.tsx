@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { Player } from '../types';
 import { getPlaysToday } from '../utils/limits';
+import { isDailyChallengeCompleted } from '../utils/tbsQuiz';
 
 interface Badge {
   id: string;
@@ -84,10 +85,10 @@ const BADGES: Badge[] = [
   {
     id: 'all-games',
     icon: '🌟',
-    name: 'Tất Cả Game',
-    desc: 'Chơi thử tất cả game trong ngày',
+    name: 'Nhân Viên Toàn Diện',
+    desc: 'Chơi thử tất cả 10 game trong ngày',
     check: () => {
-      const games = ['lac-li-xi', 'bau-cua', 'vong-quay', 'tai-xiu', 'bai-cao', 'boc-que', 'xin-xam', 'cung-ong-ba', 'do-vui-tbs'];
+      const games = ['lac-li-xi', 'bau-cua', 'vong-quay', 'tai-xiu', 'bai-cao', 'boc-que', 'xin-xam', 'cung-ong-ba', 'do-vui-tbs', 'cao-ve-so'];
       return games.every(g => getPlaysToday(g) > 0);
     },
   },
@@ -97,6 +98,59 @@ const BADGES: Badge[] = [
     name: 'Chim Sớm',
     desc: 'Chơi trước 8 giờ sáng',
     check: () => new Date().getHours() < 8,
+  },
+  // === THÀNH TÍCH VĂN HÓA TBS ===
+  {
+    id: 'culture-quiz-player',
+    icon: '⚖️',
+    name: 'Bách Khoa TBS',
+    desc: 'Chơi Đố Vui TBS ít nhất 1 lượt',
+    check: () => getPlaysToday('do-vui-tbs') > 0,
+  },
+  {
+    id: 'culture-quiz-master',
+    icon: '📢',
+    name: 'Hiểu Biết Văn Hóa',
+    desc: 'Chơi Đố Vui TBS 3 lượt trong ngày',
+    check: () => getPlaysToday('do-vui-tbs') >= 3,
+  },
+  {
+    id: 'culture-daily',
+    icon: '🎯',
+    name: 'Thử Thách Hằng Ngày',
+    desc: 'Hoàn thành Thử Thách Văn Hóa trong ngày',
+    check: () => isDailyChallengeCompleted(),
+  },
+  {
+    id: 'culture-messenger',
+    icon: '💌',
+    name: 'Truyền Thông Tích Cực',
+    desc: 'Gửi lời chúc cho đồng nghiệp',
+    check: () => {
+      try {
+        const wishes = JSON.parse(localStorage.getItem('tbs_tet2026_wishes') || '[]');
+        return wishes.length >= 1;
+      } catch { return false; }
+    },
+  },
+  {
+    id: 'culture-connector',
+    icon: '🤝',
+    name: 'Gắn Kết Đồng Nghiệp',
+    desc: 'Gửi 5 lời chúc cho đồng nghiệp',
+    check: () => {
+      try {
+        const wishes = JSON.parse(localStorage.getItem('tbs_tet2026_wishes') || '[]');
+        return wishes.length >= 5;
+      } catch { return false; }
+    },
+  },
+  {
+    id: 'nice-professional',
+    icon: '🏅',
+    name: 'Nice & Professional',
+    desc: 'Chơi 30+ lượt game — kiên trì và chuyên nghiệp!',
+    check: (p) => p.gamesPlayed >= 30,
   },
 ];
 

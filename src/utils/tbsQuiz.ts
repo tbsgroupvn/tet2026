@@ -438,3 +438,38 @@ export function getRandomQuestions(count: number): QuizQuestion[] {
 export function getRandomCultureTip(): string {
   return CULTURE_TIPS[Math.floor(Math.random() * CULTURE_TIPS.length)];
 }
+
+// Daily Culture Challenge — 1 câu hỏi cố định mỗi ngày, xoay vòng theo ngày
+const DAILY_KEY = 'tbs_daily_challenge';
+
+export function getDailyChallenge(): QuizQuestion {
+  const today = new Date().toISOString().slice(0, 10);
+  const dayNum = today.split('-').reduce((a, s) => a + parseInt(s, 10), 0);
+  return QUIZ_QUESTIONS[dayNum % QUIZ_QUESTIONS.length];
+}
+
+export function isDailyChallengeCompleted(): boolean {
+  try {
+    const saved = localStorage.getItem(DAILY_KEY);
+    if (!saved) return false;
+    const data = JSON.parse(saved);
+    return data.date === new Date().toISOString().slice(0, 10);
+  } catch { return false; }
+}
+
+export function completeDailyChallenge(correct: boolean) {
+  localStorage.setItem(DAILY_KEY, JSON.stringify({
+    date: new Date().toISOString().slice(0, 10),
+    correct,
+  }));
+}
+
+export function getDailyChallengeResult(): { correct: boolean } | null {
+  try {
+    const saved = localStorage.getItem(DAILY_KEY);
+    if (!saved) return null;
+    const data = JSON.parse(saved);
+    if (data.date !== new Date().toISOString().slice(0, 10)) return null;
+    return { correct: data.correct };
+  } catch { return null; }
+}

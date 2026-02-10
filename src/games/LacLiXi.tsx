@@ -5,6 +5,7 @@ import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 import { playCoinCollect, playShakeLiXi, playOpenLiXi, playJackpotLiXi } from '../utils/sounds';
 import GameRules from '../components/GameRules';
+import CultureTipCard from '../components/CultureTipCard';
 
 const RULES = [
   'Nhấn vào phong bao lì xì để lắc.',
@@ -149,6 +150,8 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
             <p className="greeting-text">🌸 {greeting}</p>
           </div>
         )}
+
+        {opened && <CultureTipCard />}
 
         {showHistory.length > 0 && (
           <div className="lixi-history">

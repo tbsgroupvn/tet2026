@@ -4554,3 +4554,147 @@ button:disabled {
     font-size: 1.4rem;
   }
 }
+
+/* === Culture Tip Card (In-Game) === */
+.culture-tip-ingame {
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(135deg, #fff8e1, #fff3cd);
+  border-left: 4px solid #f0b429;
+  border-radius: 8px;
+  animation: cultureTipFadeIn 0.5s ease;
+}
+@keyframes cultureTipFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.culture-tip-ingame-label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #b7791f;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.culture-tip-ingame-text {
+  font-size: 0.9rem;
+  color: #744210;
+  line-height: 1.5;
+}
+
+/* === Daily Culture Challenge === */
+.daily-challenge {
+  margin: 1.5rem 0;
+  background: linear-gradient(135deg, #1a1a4e, #2d1b69);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+}
+.daily-challenge-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+.daily-challenge-icon {
+  font-size: 2rem;
+}
+.daily-challenge-title {
+  color: #ffd700;
+  font-size: 1.1rem;
+  margin-bottom: 0.15rem;
+}
+.daily-challenge-sub {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+}
+.daily-challenge-body {}
+.daily-challenge-question {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+.daily-challenge-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.daily-challenge-opt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.daily-challenge-opt:hover {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: rgba(255, 215, 0, 0.4);
+  transform: translateX(4px);
+}
+.daily-opt-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+  font-weight: 700;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+.daily-challenge-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1rem;
+  border-radius: 10px;
+}
+.daily-challenge-result.correct {
+  background: rgba(39, 174, 96, 0.15);
+  border: 1px solid rgba(39, 174, 96, 0.4);
+}
+.daily-challenge-result.wrong {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+.daily-challenge-result-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+.daily-challenge-result-text {
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+}
+.daily-challenge-explain {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .daily-challenge {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  .daily-challenge-question {
+    font-size: 0.9rem;
+  }
+  .daily-challenge-opt {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.8rem;
+  }
+}

@@ -25,6 +25,7 @@ import TetCountdown from './components/TetCountdown';
 import Achievements from './components/Achievements';
 import LiXiBanBe from './components/LiXiBanBe';
 import { TBS_CORE_VALUES, TBS_THREE_CULTURES, getRandomCultureTip } from './utils/tbsQuiz';
+import DailyCultureChallenge from './components/DailyCultureChallenge';
 import { playClick, playGong } from './utils/sounds';
 import './App.css';
 
@@ -162,6 +163,8 @@ export default function App() {
             </div>
 
             <TetCountdown />
+
+            <DailyCultureChallenge player={player} onUpdate={handlePlayerUpdate} />
 
             <h3 className="section-title">Chọn Trò Chơi</h3>
             <div className="games-grid">

@@ -5,6 +5,7 @@ import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 import { playSpinTick, playWin, playLose } from '../utils/sounds';
 import GameRules from '../components/GameRules';
+import CultureTipCard from '../components/CultureTipCard';
 
 const RULES = [
   'Mỗi lượt quay tốn 5 xu.',
@@ -207,6 +208,8 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
             <p className="greeting-text">🌸 {greeting}</p>
           </div>
         )}
+
+        {result && <CultureTipCard />}
 
         <button
           className="spin-btn"

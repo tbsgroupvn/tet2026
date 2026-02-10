@@ -21,6 +21,13 @@ const SAMPLE_MESSAGES = [
   'Năm mới vạn sự như ý!',
   'Chúc bạn thăng tiến trong công việc!',
   'Tết vui vẻ, sum vầy cùng gia đình!',
+  // Lời chúc gắn 3 văn hóa doanh nghiệp TBS
+  '⚖️ Chúc bạn luôn Bình Đẳng — cùng đi trên một con thuyền TBS!',
+  '📢 Năm mới Báo Cáo kịp thời — truyền thông tích cực, cùng phát triển!',
+  '🎯 Chúc bạn Ôn Hòa & Chuyên Nghiệp — Nice and Professional!',
+  '🤝 Đoàn kết TBS — ba cây chụm lại nên hòn núi cao!',
+  '💡 Năm mới Sáng Tạo — cùng TBS chinh phục mục tiêu mới!',
+  '❤️ Tận Tâm phục vụ, tự hào là thành viên TBS Group!',
 ];
 
 function getWishes(): Wish[] {

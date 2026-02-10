@@ -4,6 +4,7 @@ import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 import GameRules from '../components/GameRules';
+import CultureTipCard from '../components/CultureTipCard';
 
 const RULES = [
   'Nhập họ tên và ngày tháng năm sinh trước khi bốc quẻ.',
@@ -274,6 +275,7 @@ export default function BocQue({ player, onUpdate, onBack }: BocQueProps) {
                 <p className="greeting-text">🌸 {greeting}</p>
               </div>
             )}
+            <CultureTipCard />
             <button className="bq-again-btn" onClick={handleBocQue}>
               🔮 Bốc Quẻ Lần Nữa
             </button>

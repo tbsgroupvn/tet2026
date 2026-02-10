@@ -5,6 +5,7 @@ import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 import { playWin, playLose, playChime } from '../utils/sounds';
 import GameRules from '../components/GameRules';
+import CultureTipCard from '../components/CultureTipCard';
 
 const RULES = [
   'Chọn mức cược: 10, 20, 50 hoặc 100 xu.',
@@ -223,6 +224,8 @@ export default function BaiCao({ player, onUpdate, onBack }: BaiCaoProps) {
             <p className="greeting-text">🌸 {greeting}</p>
           </div>
         )}
+
+        {result && <CultureTipCard />}
 
         <div className="tx-bet">
           <span>Mức cược:</span>

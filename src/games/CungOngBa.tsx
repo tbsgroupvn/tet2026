@@ -4,6 +4,7 @@ import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 import GameRules from '../components/GameRules';
+import CultureTipCard from '../components/CultureTipCard';
 
 const RULES = [
   'Trên bàn có 16 thẻ úp (8 cặp lễ vật cúng ông bà).',
@@ -273,6 +274,7 @@ export default function CungOngBa({ player, onUpdate, onBack }: CungOngBaProps) 
                 <p className="greeting-text">🌸 {greeting}</p>
               </div>
             )}
+            <CultureTipCard />
             {remaining > 0 && (
               <button className="bq-again-btn" onClick={initGame}>
                 🪷 Bày Mâm Cỗ Mới
@@ -288,6 +290,7 @@ export default function CungOngBa({ player, onUpdate, onBack }: CungOngBaProps) 
               {timeLeft <= 0 ? 'Hết thời gian rồi!' : `Đã hết ${MAX_MOVES} lượt lật!`}
             </p>
             <p>Đã tìm được {matches}/{TOTAL_PAIRS} cặp lễ vật.</p>
+            <CultureTipCard />
             {remaining > 0 && (
               <button className="bq-again-btn" onClick={initGame}>
                 🪷 Thử Lại

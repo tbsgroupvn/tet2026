@@ -5,6 +5,7 @@ import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 import { playWin, playLose, playDrum } from '../utils/sounds';
 import GameRules from '../components/GameRules';
+import CultureTipCard from '../components/CultureTipCard';
 
 const RULES = [
   'Chọn mức cược (10, 20 hoặc 50 xu), rồi nhấn vào 1 hoặc nhiều biểu tượng (Bầu, Cua, Tôm, Cá, Gà, Nai) để đặt cược.',
@@ -181,6 +182,8 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
             <p className="greeting-text">🌸 {greeting}</p>
           </div>
         )}
+
+        {result && <CultureTipCard />}
 
         <div className="bc-bet-amount">
           <span>Mức cược:</span>

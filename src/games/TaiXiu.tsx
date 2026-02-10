@@ -5,6 +5,7 @@ import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 import { playWin, playLose, playDrum } from '../utils/sounds';
 import GameRules from '../components/GameRules';
+import CultureTipCard from '../components/CultureTipCard';
 
 const RULES = [
   'Chọn "Tài" (tổng 11-18) hoặc "Xỉu" (tổng 3-10).',
@@ -137,6 +138,8 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
             <p className="greeting-text">🌸 {greeting}</p>
           </div>
         )}
+
+        {result && <CultureTipCard />}
 
         <div className="tx-choice">
           <button
