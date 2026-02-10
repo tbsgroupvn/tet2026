@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
+import { getGreeting } from '../utils/greetings';
 
 interface BauCuaProps {
   player: Player;
@@ -25,6 +26,7 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
   const [dice, setDice] = useState<string[]>([]);
   const [result, setResult] = useState<{ won: number; details: string } | null>(null);
   const [betAmount, setBetAmount] = useState(10);
+  const [greeting, setGreeting] = useState('');
 
   const totalBet = Object.values(bets).reduce((s, v) => s + v, 0);
 
@@ -87,6 +89,11 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
           : 'Không trúng!';
 
         setResult({ won: netResult, details });
+        if (netResult > 0) {
+          setGreeting(getGreeting(player.department));
+        } else {
+          setGreeting('');
+        }
 
         if (netResult !== 0) {
           const updated = addCoins(player, netResult, 'Bầu Cua', details);
@@ -133,6 +140,12 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
               {result.won >= 0 ? `🎉 +${result.won} xu` : `😅 ${result.won} xu`}
             </span>
             <span className="result-detail">{result.details}</span>
+          </div>
+        )}
+
+        {greeting && (
+          <div className="greeting-box">
+            <p className="greeting-text">🌸 {greeting}</p>
           </div>
         )}
 

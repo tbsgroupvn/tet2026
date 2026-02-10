@@ -1181,6 +1181,39 @@ button:disabled {
   color: var(--gold);
 }
 
+/* ============ GREETING BOX ============ */
+.greeting-box {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+  text-align: center;
+  animation: greetingFadeIn 0.5s ease;
+}
+
+.greeting-box-reward {
+  margin: 1.5rem 0;
+}
+
+.greeting-text {
+  color: var(--gold);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+@keyframes greetingFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ============ FOOTER ============ */
 .footer {
   text-align: center;

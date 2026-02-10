@@ -7,15 +7,12 @@ interface LoginScreenProps {
 const DEPARTMENTS = [
   'Ban Giám Đốc',
   'Phòng Nhân Sự',
-  'Phòng Kế Toán',
   'Phòng Marketing',
+  'Phòng Chăm Sóc Khách Hàng',
   'Phòng Kinh Doanh',
-  'Phòng IT',
-  'Phòng Sản Xuất',
-  'Phòng Kỹ Thuật',
-  'Phòng Chất Lượng',
-  'Phòng Hành Chính',
-  'Khác',
+  'Phòng Xuất Nhập Khẩu',
+  'Bộ Phận Kho',
+  'Bộ Phận Bán Hàng Senliving',
 ];
 
 export default function LoginScreen({ onLogin }: LoginScreenProps) {

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
+import { getGreeting } from '../utils/greetings';
 
 interface LacLiXiProps {
   player: Player;
@@ -33,6 +34,7 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
   const [result, setResult] = useState<typeof ENVELOPES[0] | null>(null);
   const [opened, setOpened] = useState(false);
   const [showHistory, setShowHistory] = useState<{ coins: number; label: string }[]>([]);
+  const [greeting, setGreeting] = useState('');
 
   const handleShake = useCallback(() => {
     if (isShaking) return;
@@ -50,6 +52,7 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
   const handleOpen = () => {
     if (!result || opened) return;
     setOpened(true);
+    setGreeting(getGreeting(player.department));
     const updated = addCoins(player, result.coins, 'Lắc Lì Xì', `Nhận ${result.label}`);
     onUpdate(updated);
     setShowHistory((prev) => [{ coins: result.coins, label: result.label }, ...prev.slice(0, 9)]);
@@ -98,6 +101,12 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
             )}
           </div>
         </div>
+
+        {opened && greeting && (
+          <div className="greeting-box">
+            <p className="greeting-text">🌸 {greeting}</p>
+          </div>
+        )}
 
         {showHistory.length > 0 && (
           <div className="lixi-history">

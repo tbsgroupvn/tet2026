@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Player } from '../types';
 import { REWARDS, getTierColor } from '../utils/rewards';
 import { savePlayer } from '../utils/storage';
+import { getGreeting } from '../utils/greetings';
 
 interface RewardShopProps {
   player: Player;
@@ -12,6 +13,7 @@ export default function RewardShop({ player, onUpdate }: RewardShopProps) {
   const [selectedTier, setSelectedTier] = useState<string>('all');
   const [showConfirm, setShowConfirm] = useState<string | null>(null);
   const [redeemed, setRedeemed] = useState<string | null>(null);
+  const [greeting, setGreeting] = useState('');
 
   const filtered = selectedTier === 'all'
     ? REWARDS
@@ -30,7 +32,8 @@ export default function RewardShop({ player, onUpdate }: RewardShopProps) {
     onUpdate(updated);
     setShowConfirm(null);
     setRedeemed(rewardId);
-    setTimeout(() => setRedeemed(null), 3000);
+    setGreeting(getGreeting(player.department));
+    setTimeout(() => { setRedeemed(null); setGreeting(''); }, 5000);
   };
 
   return (
@@ -84,6 +87,12 @@ export default function RewardShop({ player, onUpdate }: RewardShopProps) {
           </div>
         ))}
       </div>
+
+      {greeting && (
+        <div className="greeting-box greeting-box-reward">
+          <p className="greeting-text">🌸 {greeting}</p>
+        </div>
+      )}
 
       {player.rewards.length > 0 && (
         <div className="my-rewards">

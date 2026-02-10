@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
+import { getGreeting } from '../utils/greetings';
 
 interface VongQuayProps {
   player: Player;
@@ -35,6 +36,7 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [result, setResult] = useState<typeof SLICES[0] | null>(null);
+  const [greeting, setGreeting] = useState('');
   const wheelRef = useRef<SVGGElement>(null);
 
   const spin = useCallback(() => {
@@ -61,8 +63,11 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
       const prize = SLICES[winnerIdx];
       setResult(prize);
       if (prize.coins > 0) {
+        setGreeting(getGreeting(player.department));
         const updated = addCoins(afterCost, prize.coins, 'Vòng Quay', `Trúng ${prize.label}`);
         onUpdate(updated);
+      } else {
+        setGreeting('');
       }
       setSpinning(false);
     }, 4000);
@@ -150,6 +155,12 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
                 <span>Tiếc quá! Mất lượt rồi!</span>
               </>
             )}
+          </div>
+        )}
+
+        {greeting && (
+          <div className="greeting-box">
+            <p className="greeting-text">🌸 {greeting}</p>
           </div>
         )}
 
