@@ -3,6 +3,18 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import GameRules from '../components/GameRules';
+
+const RULES = [
+  'Chọn mức cược: 10, 20, 50 hoặc 100 xu.',
+  'Nhấn "Chia Bài" — bạn và Nhà Cái mỗi người nhận 3 lá bài.',
+  'Điểm = tổng giá trị 3 lá bài, chỉ lấy hàng đơn vị (ví dụ: tổng 17 → 7 nút).',
+  'Giá trị bài: A=1, 2-9 theo mặt, 10/J/Q/K=10 (tính là 0 nút).',
+  'Ai nhiều nút hơn thắng. Bằng điểm → hòa (không mất xu).',
+  'Được 8 hoặc 9 nút (Bát/Cửu) → thắng gấp đôi!',
+  'Thua → mất số xu đã cược.',
+  'Giới hạn 15 lượt chơi mỗi ngày.',
+];
 
 interface BaiCaoProps {
   player: Player;
@@ -133,6 +145,7 @@ export default function BaiCao({ player, onUpdate, onBack }: BaiCaoProps) {
         <p className="game-instruction">
           Chia 3 lá bài, tính điểm hàng đơn vị. Ai cao hơn thắng! Được 8-9 nút thắng gấp đôi!
         </p>
+        <GameRules rules={RULES} />
 
         {remaining > 0 ? (
           <div className="limit-info">

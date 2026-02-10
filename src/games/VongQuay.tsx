@@ -3,6 +3,16 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import GameRules from '../components/GameRules';
+
+const RULES = [
+  'Mỗi lượt quay tốn 5 xu.',
+  'Nhấn nút "Quay" để quay vòng quay may mắn.',
+  'Vòng quay có 8 ô: 10 xu, 20 xu, 30 xu, 50 xu, 100 xu, 200 xu, 500 xu và Mất Lượt.',
+  'Kim chỉ dừng ở ô nào → bạn nhận xu tương ứng (trừ ô Mất Lượt).',
+  'Ô 200 xu và 500 xu rất hiếm — chúc bạn may mắn!',
+  'Giới hạn 15 lượt quay mỗi ngày.',
+];
 
 interface VongQuayProps {
   player: Player;
@@ -96,6 +106,7 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
         <p className="game-instruction">
           Quay vòng quay để nhận xu! Chi phí: 🪙 {SPIN_COST} xu/lượt
         </p>
+        <GameRules rules={RULES} />
 
         {remaining > 0 ? (
           <div className="limit-info">

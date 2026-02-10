@@ -2105,3 +2105,95 @@ button:disabled {
     padding: 0.3rem 0.5rem;
   }
 }
+
+/* ============ Game Rules Component ============ */
+.game-rules {
+  max-width: 500px;
+  margin: 0.8rem auto;
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.game-rules.open {
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.game-rules-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--gold);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.game-rules-toggle:hover {
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.game-rules-icon {
+  font-size: 1.1rem;
+}
+
+.game-rules-arrow {
+  margin-left: auto;
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.game-rules-content {
+  padding: 0 1.2rem 1rem;
+  animation: rules-slide-in 0.2s ease-out;
+}
+
+@keyframes rules-slide-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.game-rules-content ol {
+  list-style: none;
+  counter-reset: rule-counter;
+  padding: 0;
+  margin: 0;
+}
+
+.game-rules-content ol li {
+  counter-increment: rule-counter;
+  position: relative;
+  padding: 0.4rem 0 0.4rem 2rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.game-rules-content ol li:last-child {
+  border-bottom: none;
+}
+
+.game-rules-content ol li::before {
+  content: counter(rule-counter);
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  width: 1.4rem;
+  height: 1.4rem;
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: var(--gold);
+}

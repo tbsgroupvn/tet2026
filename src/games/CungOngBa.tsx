@@ -3,6 +3,19 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import GameRules from '../components/GameRules';
+
+const RULES = [
+  'Trên bàn có 16 thẻ úp (8 cặp lễ vật cúng ông bà).',
+  'Nhấn vào thẻ để lật lên. Mỗi lượt lật 2 thẻ.',
+  'Nếu 2 thẻ giống nhau → ghép cặp thành công, thẻ sẽ biến mất.',
+  'Nếu 2 thẻ khác nhau → thẻ úp lại. Hãy nhớ vị trí!',
+  'Tìm hết 8 cặp lễ vật để hoàn thành mâm cỗ.',
+  'Giới hạn thời gian: 90 giây. Giới hạn lượt lật: 30 lượt.',
+  'Hết thời gian hoặc hết lượt lật mà chưa xong → thua!',
+  'Xu thưởng = 30 + thưởng thời gian + thưởng lượt lật. Càng nhanh, ít lượt → càng nhiều xu!',
+  'Giới hạn 10 lượt chơi mỗi ngày.',
+];
 
 interface CungOngBaProps {
   player: Player;
@@ -212,6 +225,7 @@ export default function CungOngBa({ player, onUpdate, onBack }: CungOngBaProps) 
         <p className="game-instruction">
           Lật tìm {TOTAL_PAIRS} cặp lễ vật trong {TIME_LIMIT}s và tối đa {MAX_MOVES} lượt lật! Càng nhanh càng nhiều xu!
         </p>
+        <GameRules rules={RULES} />
 
         {remaining > 0 && !gameOver && !gameFailed && (
           <div className="limit-info">

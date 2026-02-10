@@ -3,6 +3,17 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import GameRules from '../components/GameRules';
+
+const RULES = [
+  'Chọn mức cược (10, 20 hoặc 50 xu), rồi nhấn vào 1 hoặc nhiều biểu tượng (Bầu, Cua, Tôm, Cá, Gà, Nai) để đặt cược.',
+  'Mỗi lần nhấn sẽ cộng thêm mức cược vào biểu tượng đó. Có thể đặt nhiều biểu tượng cùng lúc.',
+  'Nhấn "Lắc Xúc Xắc" để lắc 3 con xúc xắc.',
+  'Mỗi xúc xắc sẽ ra 1 trong 6 biểu tượng. Nếu biểu tượng bạn đặt trùng với xúc xắc → thắng!',
+  'Trùng 1 xúc xắc: thắng 1x tiền cược. Trùng 2: thắng 2x. Trùng cả 3: thắng 3x!',
+  'Không trùng biểu tượng nào → mất tiền cược.',
+  'Giới hạn 15 lượt lắc mỗi ngày.',
+];
 
 interface BauCuaProps {
   player: Player;
@@ -116,6 +127,7 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
         <p className="game-instruction">
           Đặt cược vào biểu tượng, lắc 3 xúc xắc. Trúng bao nhiêu thưởng bấy nhiêu!
         </p>
+        <GameRules rules={RULES} />
 
         {remaining > 0 ? (
           <div className="limit-info">

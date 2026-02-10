@@ -3,6 +3,16 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import GameRules from '../components/GameRules';
+
+const RULES = [
+  'Nhập họ tên và ngày tháng năm sinh trước khi bốc quẻ.',
+  'Hệ thống sẽ tính con giáp và ngũ hành dựa trên năm sinh.',
+  'Nhấn vào ống quẻ để bốc quẻ — mỗi quẻ kèm bài thơ và lời giải.',
+  'Có 6 mức quẻ: Thượng Thượng, Thượng, Trung Thượng, Trung, Trung Hạ, Hạ.',
+  'Lần bốc quẻ đầu tiên trong ngày sẽ nhận xu thưởng (10-50 xu tùy quẻ).',
+  'Các lần bốc sau vẫn xem được quẻ nhưng không nhận thêm xu.',
+];
 
 interface BocQueProps {
   player: Player;
@@ -139,6 +149,7 @@ export default function BocQue({ player, onUpdate, onBack }: BocQueProps) {
           <p className="game-instruction">
             Nhập thông tin để bốc quẻ xem vận mệnh năm mới!
           </p>
+          <GameRules rules={RULES} />
 
           <div className="fortune-form">
             <div className="fortune-field">
@@ -196,6 +207,7 @@ export default function BocQue({ player, onUpdate, onBack }: BocQueProps) {
         <p className="game-instruction">
           Thành tâm bốc quẻ để xem vận mệnh năm mới!
         </p>
+        <GameRules rules={RULES} />
 
         <div className="fortune-info-display">
           <p><strong>{fullName}</strong> — Sinh ngày {birthDay}/{birthMonth}/{birthYear}</p>

@@ -3,6 +3,17 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import GameRules from '../components/GameRules';
+
+const RULES = [
+  'Nhập họ tên và ngày tháng năm sinh trước khi xin xăm.',
+  'Hệ thống sẽ tính con giáp và ngũ hành dựa trên năm sinh.',
+  'Nhấn vào ống xăm để lắc và rút thẻ xăm.',
+  'Mỗi thẻ xăm có số, bài thơ, lời giải và lời khuyên cho năm mới.',
+  'Có 6 hạng xăm: Thượng Thượng, Thượng, Trung Thượng, Trung, Trung Hạ và Hạ.',
+  'Lần xin xăm đầu tiên trong ngày sẽ nhận xu thưởng (10-40 xu tùy xăm).',
+  'Các lần xin sau vẫn xem được xăm nhưng không nhận thêm xu.',
+];
 
 interface XinXamProps {
   player: Player;
@@ -139,6 +150,7 @@ export default function XinXam({ player, onUpdate, onBack }: XinXamProps) {
           <p className="game-instruction">
             Nhập thông tin để xin xăm xem vận mệnh năm mới!
           </p>
+          <GameRules rules={RULES} />
 
           <div className="fortune-form">
             <div className="fortune-field">
@@ -196,6 +208,7 @@ export default function XinXam({ player, onUpdate, onBack }: XinXamProps) {
         <p className="game-instruction">
           Thành tâm lắc ống xăm, rút một thẻ xăm để biết vận mệnh năm mới!
         </p>
+        <GameRules rules={RULES} />
 
         <div className="fortune-info-display">
           <p><strong>{fullName}</strong> — Sinh ngày {birthDay}/{birthMonth}/{birthYear}</p>

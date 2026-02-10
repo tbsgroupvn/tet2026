@@ -3,6 +3,15 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import GameRules from '../components/GameRules';
+
+const RULES = [
+  'Nhấn vào phong bao lì xì để lắc.',
+  'Sau khi lắc xong, nhấn tiếp để mở phong bao và nhận xu.',
+  'Mỗi phong bao chứa ngẫu nhiên từ 5 đến 500 xu.',
+  'Phong bao giá trị cao (200, 500 xu) rất hiếm — hãy thử vận may!',
+  'Giới hạn 10 lượt lắc mỗi ngày. Lượt mới sẽ được cấp vào ngày hôm sau.',
+];
 
 interface LacLiXiProps {
   player: Player;
@@ -72,6 +81,7 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
         <p className="game-instruction">
           Lắc lì xì để nhận xu may mắn! Mỗi phong bao chứa phần thưởng bất ngờ!
         </p>
+        <GameRules rules={RULES} />
 
         {remaining > 0 ? (
           <div className="limit-info">

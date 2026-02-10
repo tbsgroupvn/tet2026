@@ -3,6 +3,16 @@ import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
 import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
+import GameRules from '../components/GameRules';
+
+const RULES = [
+  'Chọn "Tài" (tổng 11-18) hoặc "Xỉu" (tổng 3-10).',
+  'Chọn mức cược: 10, 20, 50 hoặc 100 xu.',
+  'Nhấn "Lắc Xúc Xắc" để lắc 3 xúc xắc.',
+  'Tổng 3 xúc xắc từ 11 đến 18 là TÀI, từ 3 đến 10 là XỈU.',
+  'Đoán đúng → thắng số xu bằng mức cược. Đoán sai → mất xu cược.',
+  'Giới hạn 15 lượt chơi mỗi ngày.',
+];
 
 interface TaiXiuProps {
   player: Player;
@@ -79,6 +89,7 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
         <p className="game-instruction">
           Đoán tổng 3 xúc xắc: <strong>Tài</strong> (11-18) hoặc <strong>Xỉu</strong> (3-10). Đoán đúng thắng gấp đôi!
         </p>
+        <GameRules rules={RULES} />
 
         {remaining > 0 ? (
           <div className="limit-info">
