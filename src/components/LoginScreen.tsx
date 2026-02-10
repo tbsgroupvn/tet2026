@@ -33,14 +33,20 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     <div className="login-overlay">
       <div className="login-card">
         <div className="login-header">
+          <img src="/tbs-logo.svg" alt="TBS Group" className="login-logo" />
           <div className="login-lanterns">🏮🏮🏮</div>
           <h1 className="login-title">Chúc Mừng Năm Mới</h1>
           <h2 className="login-subtitle">TBS Group - Tết 2026</h2>
           <div className="login-dragon">🐍</div>
+          <p className="login-wish">
+            Kính chúc Quý Anh Chị Em cán bộ nhân viên TBS Group
+            <br />
+            năm mới <strong>An Khang Thịnh Vượng</strong>!
+          </p>
           <p className="login-desc">
             Chào mừng bạn đến với sân chơi Tết Nguyên Đán!
             <br />
-            Chơi game, nhận xu, đổi quà thật!
+            Chơi game, nhận xu, đổi thưởng tiền thật!
           </p>
         </div>
         <form onSubmit={handleSubmit} className="login-form">

@@ -11,7 +11,7 @@ export default function Header({ player, onNavigate, currentPage }: HeaderProps)
     <header className="header">
       <div className="header-inner">
         <div className="header-brand" onClick={() => onNavigate('home')}>
-          <span className="header-logo">🧧</span>
+          <img src="/tbs-logo.svg" alt="TBS Group" className="header-logo-img" />
           <div>
             <h1 className="header-title">TBS Group</h1>
             <p className="header-subtitle">Tết Nguyên Đán 2026</p>

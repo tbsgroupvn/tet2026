@@ -73,44 +73,54 @@ export default function App() {
         {currentPage === 'home' && (
           <div className="home-page">
             <div className="welcome-banner">
-              <h2>Chuc Mung Nam Moi 2026!</h2>
-              <p>Chuc anh chi em TBS Group suc khoe, hanh phuc, phat tai!</p>
+              <img src="/tbs-logo.svg" alt="TBS Group" className="welcome-logo" />
+              <h2>Chúc Mừng Năm Mới 2026!</h2>
+              <p className="welcome-wish">
+                Kính chúc Quý Anh Chị Em cán bộ nhân viên TBS Group
+                <br />
+                một năm mới <strong>An Khang Thịnh Vượng</strong>, vạn sự như ý,
+                <br />
+                sức khỏe dồi dào, tài lộc đầy nhà!
+              </p>
+              <div className="tet-greeting">
+                🌸 Tân Xuân Bính Ngọ - Phúc Lộc Song Toàn 🌸
+              </div>
               <div className="welcome-stats">
                 <div className="stat">
                   <span className="stat-value">{player.totalCoins.toLocaleString()}</span>
-                  <span className="stat-label">Xu cua ban</span>
+                  <span className="stat-label">Xu của bạn</span>
                 </div>
                 <div className="stat">
                   <span className="stat-value">{player.gamesPlayed}</span>
-                  <span className="stat-label">Luot choi</span>
+                  <span className="stat-label">Lượt chơi</span>
                 </div>
                 <div className="stat">
                   <span className="stat-value">{player.rewards.length}</span>
-                  <span className="stat-label">Qua da doi</span>
+                  <span className="stat-label">Quà đã đổi</span>
                 </div>
               </div>
             </div>
 
-            <h3 className="section-title">Chon Tro Choi</h3>
+            <h3 className="section-title">Chọn Trò Chơi</h3>
             <div className="games-grid">
               <GameCard
                 emoji="🧧"
-                title="Lac Li Xi"
-                description="Lac li xi nhan xu may man! Moi phong bao la mot bat ngo!"
+                title="Lắc Lì Xì"
+                description="Lắc lì xì nhận xu may mắn! Mỗi phong bao là một bất ngờ!"
                 color="#e74c3c"
                 onClick={() => setCurrentGame('lac-li-xi')}
               />
               <GameCard
                 emoji="🎲"
-                title="Bau Cua Tom Ca"
-                description="Game dan gian kinh dien! Dat cuoc va lac xuc xac!"
+                title="Bầu Cua Tôm Cá"
+                description="Game dân gian kinh điển! Đặt cược và lắc xúc xắc!"
                 color="#f39c12"
                 onClick={() => setCurrentGame('bau-cua')}
               />
               <GameCard
                 emoji="🎡"
-                title="Vong Quay Tai Loc"
-                description="Quay vong quay may man! Co hoi trung lon!"
+                title="Vòng Quay Tài Lộc"
+                description="Quay vòng quay may mắn! Cơ hội trúng lớn!"
                 color="#e91e63"
                 onClick={() => setCurrentGame('vong-quay')}
               />
@@ -128,8 +138,9 @@ export default function App() {
       </main>
 
       <footer className="footer">
-        <p>TBS Group - Tet Nguyen Dan 2026</p>
-        <p>Chuc Mung Nam Moi - Van Su Nhu Y</p>
+        <img src="/tbs-logo.svg" alt="TBS Group" className="footer-logo" />
+        <p>TBS Group - Tết Nguyên Đán 2026</p>
+        <p>Chúc Mừng Năm Mới - Vạn Sự Như Ý - An Khang Thịnh Vượng</p>
       </footer>
     </div>
   );
