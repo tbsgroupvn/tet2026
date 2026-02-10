@@ -297,3 +297,40 @@ export interface AdminStats {
 export async function fetchAdminStats(): Promise<AdminStats | null> {
   return adminApiCall<AdminStats>('/admin/stats');
 }
+
+// Validate admin token against server (returns false if token is invalid/expired)
+export async function validateAdminToken(): Promise<boolean> {
+  try {
+    const adminToken = getAdminToken();
+    if (!adminToken) return false;
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const token = getAccessToken();
+    if (token) headers['x-access-token'] = token;
+    headers['x-admin-token'] = adminToken;
+    const res = await fetch(`${API_BASE}/admin/validate`, { headers });
+    if (!res.ok) {
+      clearAdminToken();
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Database health check
+export interface DbHealth {
+  status: string;
+  database: string;
+  tables?: { players: number; rewards_redeemed: number; game_results: number };
+  error?: string;
+}
+
+export async function fetchDbHealth(): Promise<DbHealth | null> {
+  return adminApiCall<DbHealth>('/admin/health');
+}
+
+// Logout admin (clear token)
+export function logoutAdmin(): void {
+  clearAdminToken();
+}
