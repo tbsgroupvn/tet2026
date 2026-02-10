@@ -3348,16 +3348,160 @@ button:disabled {
   background: rgba(46, 204, 113, 0.35);
 }
 
+.admin-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.admin-logout-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(231, 76, 60, 0.15);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  border-radius: 10px;
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  transition: all 0.3s;
+}
+
+.admin-logout-btn:hover {
+  background: rgba(231, 76, 60, 0.3);
+}
+
+.admin-login-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Database health status */
+.admin-db-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.admin-db-status.connected {
+  background: rgba(39, 174, 96, 0.1);
+  border: 1px solid rgba(39, 174, 96, 0.3);
+  color: #2ecc71;
+}
+
+.admin-db-status.disconnected {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: #ff6b6b;
+}
+
+.admin-db-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.admin-db-status.connected .admin-db-indicator {
+  background: #2ecc71;
+  box-shadow: 0 0 6px #2ecc71;
+}
+
+.admin-db-status.disconnected .admin-db-indicator {
+  background: #e74c3c;
+  box-shadow: 0 0 6px #e74c3c;
+}
+
+/* Data error banner */
+.admin-data-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+  background: rgba(231, 76, 60, 0.15);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  border-radius: 10px;
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+.admin-retry-btn {
+  padding: 0.3rem 0.8rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.admin-retry-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Search bar */
+.admin-search-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.admin-search-input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.admin-search-input:focus {
+  border-color: var(--gold);
+}
+
+.admin-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.admin-search-clear {
+  padding: 0.4rem 0.8rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  transition: all 0.3s;
+}
+
+.admin-search-clear:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
 @media (max-width: 600px) {
   .admin-header {
     flex-direction: column;
     text-align: center;
+  }
+  .admin-header-actions {
+    justify-content: center;
   }
   .admin-stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   .admin-label {
     min-width: 90px;
+  }
+  .admin-search-bar {
+    flex-direction: column;
   }
 }
 

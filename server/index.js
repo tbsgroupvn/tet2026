@@ -261,6 +261,32 @@ app.post('/api/admin/verify', (req, res) => {
   return res.status(401).json({ error: 'Mã admin không đúng' });
 });
 
+// Validate admin token (check if still valid without re-entering code)
+app.get('/api/admin/validate', adminAuth, (_req, res) => {
+  res.json({ valid: true });
+});
+
+// Database health check for admin
+app.get('/api/admin/health', adminAuth, (_req, res) => {
+  try {
+    const playerCount = db.prepare('SELECT COUNT(*) as count FROM players').get();
+    const redemptionCount = db.prepare('SELECT COUNT(*) as count FROM rewards_redeemed').get();
+    const gameCount = db.prepare('SELECT COUNT(*) as count FROM game_results').get();
+    res.json({
+      status: 'ok',
+      database: 'connected',
+      tables: {
+        players: playerCount.count,
+        rewards_redeemed: redemptionCount.count,
+        game_results: gameCount.count,
+      },
+    });
+  } catch (err) {
+    console.error('Database health check failed:', err);
+    res.status(500).json({ status: 'error', database: 'disconnected', error: err.message });
+  }
+});
+
 // Admin middleware
 function adminAuth(req, res, next) {
   const adminToken = req.headers['x-admin-token'];
