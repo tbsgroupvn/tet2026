@@ -109,6 +109,7 @@ export default function XinXam({ player, onUpdate, onBack }: XinXamProps) {
   const [result, setResult] = useState<typeof XAM_LIST[0] | null>(null);
   const [greeting, setGreeting] = useState('');
   const [coinAwarded, setCoinAwarded] = useState(!canPlay('xin-xam'));
+  const [earnedCoins, setEarnedCoins] = useState(0);
   const remaining = getRemainingPlays('xin-xam');
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -136,8 +137,10 @@ export default function XinXam({ player, onUpdate, onBack }: XinXamProps) {
         const updated = addCoins(player, xam.coins, 'Xin Xăm', `Xăm số ${xam.number}: +${xam.coins} xu`);
         onUpdate(updated);
         setCoinAwarded(true);
+        setEarnedCoins(xam.coins);
         setGreeting(getGreeting(player.department));
       } else {
+        setEarnedCoins(0);
         setGreeting('');
       }
 
@@ -265,7 +268,7 @@ export default function XinXam({ player, onUpdate, onBack }: XinXamProps) {
               <div className="xam-advice">
                 <strong>🔮 Lời giải:</strong> {result.advice}
               </div>
-              <div className="xam-coins">🪙 +{result.coins} xu</div>
+              {earnedCoins > 0 && <div className="xam-coins">🪙 +{earnedCoins} xu</div>}
             </div>
 
             {greeting && (

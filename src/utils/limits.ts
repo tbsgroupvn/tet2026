@@ -6,7 +6,10 @@ interface DailyLimits {
 }
 
 function getToday(): string {
-  return new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  return now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0');
 }
 
 function getLimits(): DailyLimits {
@@ -53,6 +56,7 @@ export function getMaxPlays(game: string): number {
     case 'oan-tu-ti': return 15;
     case 'doan-so': return 10;
     case 'xoc-dia': return 15;
+    case 'oan-tu-ti-pvp': return 10;
     default: return 10;
   }
 }

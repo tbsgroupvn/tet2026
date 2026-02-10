@@ -5,6 +5,7 @@ import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 import { getRandomQuestions } from '../utils/tbsQuiz';
 import type { QuizQuestion } from '../utils/tbsQuiz';
 import GameRules from '../components/GameRules';
+import CultureTipCard from '../components/CultureTipCard';
 
 const RULES = [
   'Mỗi lượt chơi gồm 10 câu hỏi về văn hóa, dịch vụ và giá trị TBS Group.',
@@ -253,6 +254,7 @@ export default function DoVuiTBS({ player, onUpdate, onBack }: DoVuiTBSProps) {
                 <p>📚 Đây là cơ hội để hiểu thêm về TBS Group! Hãy đọc giải thích và thử lại nhé!</p>
               )}
             </div>
+            <CultureTipCard />
             <div className="quiz-summary-actions">
               <button className="quiz-start-btn" onClick={startRound} disabled={remaining <= 0}>
                 {remaining > 0 ? '🔄 Chơi Lại' : 'Hết lượt hôm nay'}

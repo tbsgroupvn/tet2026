@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { playWin, playLose, playClick } from '../utils/sounds';
+import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 import GameRules from '../components/GameRules';
 import CultureTipCard from '../components/CultureTipCard';
 
@@ -183,6 +184,7 @@ export default function OanTuTiPVP({ player, onUpdate, onBack }: Props) {
   useEffect(() => {
     if (phase === 'finished' && room && !rewarded) {
       setRewarded(true);
+      recordPlay('oan-tu-ti-pvp');
       const iWon = room.winner === room.myIndex;
       const myScore = room.scores[room.myIndex];
       const opScore = room.scores[room.myIndex === 0 ? 1 : 0];
@@ -222,10 +224,15 @@ export default function OanTuTiPVP({ player, onUpdate, onBack }: Props) {
         {/* MENU: Create or Join */}
         {phase === 'menu' && (
           <div className="pvp-menu">
+            {!canPlay('oan-tu-ti-pvp') ? (
+              <div className="limit-notice">🔒 Đã hết lượt PvP hôm nay ({getRemainingPlays('oan-tu-ti-pvp')}/{10}). Quay lại ngày mai nhé!</div>
+            ) : (
+              <div className="limit-info">🎮 Còn {getRemainingPlays('oan-tu-ti-pvp')} lượt hôm nay</div>
+            )}
             <div className="pvp-menu-section">
               <h3>Tạo Phòng Mới</h3>
               <p>Tạo phòng và chia sẻ mã cho đồng nghiệp</p>
-              <button className="pvp-btn create" onClick={handleCreate} disabled={loading}>
+              <button className="pvp-btn create" onClick={handleCreate} disabled={loading || !canPlay('oan-tu-ti-pvp')}>
                 {loading ? '⏳ Đang tạo...' : '🏠 Tạo Phòng'}
               </button>
             </div>

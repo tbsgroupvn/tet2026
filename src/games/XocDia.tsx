@@ -63,7 +63,7 @@ export default function XocDia({ player, onUpdate, onBack }: Props) {
 
       recordPlay('xoc-dia');
       setRemaining(getRemainingPlays('xoc-dia'));
-      setGreeting(getGreeting(player.department));
+      setGreeting(won ? getGreeting(player.department) : '');
 
       const updated = addCoins(
         player,
