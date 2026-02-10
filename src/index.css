@@ -3050,10 +3050,11 @@ button:disabled {
   color: #fff;
   font-size: 1.1rem;
   text-align: center;
-  letter-spacing: 2px;
+  letter-spacing: 0;
   outline: none;
   margin-bottom: 1rem;
   transition: border-color 0.3s;
+  font-family: inherit;
 }
 
 .admin-code-input:focus {
@@ -3078,12 +3079,25 @@ button:disabled {
   font-size: 1.05rem;
   font-weight: 700;
   border-radius: 12px;
+  border: none;
+  cursor: pointer;
   transition: all 0.3s;
 }
 
-.admin-login-btn:hover {
+.admin-login-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
+}
+
+.admin-login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-login-hint {
+  margin-top: 1.2rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .admin-dashboard {
@@ -3106,6 +3120,12 @@ button:disabled {
   font-size: 1.2rem;
 }
 
+.admin-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 .admin-refresh-btn {
   padding: 0.5rem 1rem;
   background: rgba(255, 215, 0, 0.15);
@@ -3113,11 +3133,64 @@ button:disabled {
   border-radius: 10px;
   color: var(--gold);
   font-size: 0.85rem;
+  cursor: pointer;
   transition: all 0.3s;
 }
 
-.admin-refresh-btn:hover {
+.admin-refresh-btn:hover:not(:disabled) {
   background: rgba(255, 215, 0, 0.25);
+}
+
+.admin-logout-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(231, 76, 60, 0.15);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 10px;
+  color: #e74c3c;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.admin-logout-btn:hover {
+  background: rgba(231, 76, 60, 0.3);
+}
+
+.admin-data-error {
+  background: rgba(231, 76, 60, 0.15);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-retry-btn {
+  padding: 0.4rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.admin-retry-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.admin-loading {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 3rem;
+  font-size: 0.95rem;
 }
 
 .admin-exit-btn {

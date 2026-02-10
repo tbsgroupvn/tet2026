@@ -184,6 +184,9 @@ export default function AdminDashboard() {
           >
             {loggingIn ? 'Đang xác thực...' : 'Đăng Nhập'}
           </button>
+          <div className="admin-login-hint">
+            Liên hệ Phòng Nhân Sự để nhận mã quản trị
+          </div>
         </div>
       </div>
     );
