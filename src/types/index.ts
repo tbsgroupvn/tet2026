@@ -37,3 +37,15 @@ export interface WheelSlice {
   color: string;
   probability: number;
 }
+
+export interface PrizeTransfer {
+  id: string;
+  playerId: string;
+  playerName: string;
+  rewardName: string;
+  status: 'pending' | 'delivered' | 'cancelled';
+  timestamp: number;
+  note: string;
+}
+
+export type AdminPage = 'players' | 'transfers' | 'prizes';
