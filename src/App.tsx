@@ -31,6 +31,7 @@ import Achievements from './components/Achievements';
 import LiXiBanBe from './components/LiXiBanBe';
 import { TBS_CORE_VALUES, TBS_THREE_CULTURES, getRandomCultureTip } from './utils/tbsQuiz';
 import DailyCultureChallenge from './components/DailyCultureChallenge';
+import GameWalletBar from './components/GameWalletBar';
 import { playClick, playGong } from './utils/sounds';
 import './App.css';
 
@@ -129,6 +130,7 @@ export default function App() {
           {currentGame === 'xoc-dia' && <XocDia {...gameProps} />}
           {currentGame === 'oan-tu-ti-pvp' && <OanTuTiPVP {...gameProps} />}
         </main>
+        <GameWalletBar player={player} onGoToRewards={() => { setCurrentGame(null); setCurrentPage('rewards'); }} />
       </div>
     );
   }
@@ -175,6 +177,59 @@ export default function App() {
             <TetCountdown />
 
             <DailyCultureChallenge player={player} onUpdate={handlePlayerUpdate} />
+
+            {/* Hướng dẫn kiếm xu cho người mới */}
+            <div className="coin-guide">
+              <h3 className="coin-guide-title">💰 Cách Kiếm Xu</h3>
+              <p className="coin-guide-intro">Chơi game để kiếm xu, sau đó đổi xu lấy quà thật!</p>
+              <div className="coin-guide-grid">
+                <div className="coin-guide-item top">
+                  <span className="coin-guide-icon">🏢</span>
+                  <div>
+                    <strong>Đố Vui TBS</strong>
+                    <span className="coin-guide-reward">+10~20 xu/câu đúng</span>
+                  </div>
+                </div>
+                <div className="coin-guide-item top">
+                  <span className="coin-guide-icon">🚢</span>
+                  <div>
+                    <strong>Logistics & TQ</strong>
+                    <span className="coin-guide-reward">+10~20 xu/câu đúng</span>
+                  </div>
+                </div>
+                <div className="coin-guide-item top">
+                  <span className="coin-guide-icon">🔢</span>
+                  <div>
+                    <strong>Đoán Số</strong>
+                    <span className="coin-guide-reward">+15~50 xu/ván</span>
+                  </div>
+                </div>
+                <div className="coin-guide-item">
+                  <span className="coin-guide-icon">🎟️</span>
+                  <div>
+                    <strong>Cào Vé Số</strong>
+                    <span className="coin-guide-reward">+5~100 xu/vé</span>
+                  </div>
+                </div>
+                <div className="coin-guide-item">
+                  <span className="coin-guide-icon">🧧</span>
+                  <div>
+                    <strong>Lắc Lì Xì</strong>
+                    <span className="coin-guide-reward">+5~50 xu/lần</span>
+                  </div>
+                </div>
+                <div className="coin-guide-item">
+                  <span className="coin-guide-icon">🎯</span>
+                  <div>
+                    <strong>Thử Thách Hằng Ngày</strong>
+                    <span className="coin-guide-reward">+15 xu (miễn phí!)</span>
+                  </div>
+                </div>
+              </div>
+              <div className="coin-guide-tip">
+                💡 <strong>Mẹo:</strong> Chơi Đố Vui TBS & Logistics mỗi ngày để kiếm xu nhanh nhất! Trả lời đúng càng nhiều → xu càng nhiều.
+              </div>
+            </div>
 
             <h3 className="section-title">Chọn Trò Chơi</h3>
             <div className="games-grid">

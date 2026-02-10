@@ -669,6 +669,7 @@ button:disabled {
 .game-page {
   max-width: 700px;
   margin: 0 auto;
+  padding-bottom: 4rem;
 }
 
 .back-btn {
@@ -5141,4 +5142,132 @@ button:disabled {
   .pvp-room-number { font-size: 2.5rem; }
   .pvp-join-input { flex-direction: column; }
   .pvp-code-input { width: 140px; }
+}
+
+/* ========== HƯỚNG DẪN KIẾM XU ========== */
+.coin-guide {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(139, 0, 0, 0.15));
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.coin-guide-title {
+  color: var(--gold);
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 0.3rem;
+}
+.coin-guide-intro {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+.coin-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.coin-guide-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.7rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.coin-guide-item.top {
+  background: rgba(255, 215, 0, 0.08);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+.coin-guide-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.coin-guide-item div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.coin-guide-item strong {
+  color: #fff;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.coin-guide-reward {
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.coin-guide-item.top .coin-guide-reward {
+  color: #27ae60;
+}
+.coin-guide-tip {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  padding: 0.6rem;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+/* ========== GAME WALLET BAR (sticky bottom) ========== */
+.game-wallet-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1.2rem;
+  background: linear-gradient(180deg, rgba(26, 10, 10, 0.95), rgba(45, 8, 8, 0.98));
+  border-top: 2px solid rgba(255, 215, 0, 0.3);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+}
+.game-wallet-info {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.game-wallet-coins {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.game-wallet-plays {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+.game-wallet-btn {
+  padding: 0.5rem 1.2rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #1a0a0a;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.game-wallet-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+@media (max-width: 600px) {
+  .coin-guide-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .coin-guide { padding: 1rem; }
+  .game-wallet-bar { padding: 0.5rem 0.8rem; }
+  .game-wallet-coins { font-size: 1rem; }
+  .game-wallet-info { gap: 0.8rem; }
 }
