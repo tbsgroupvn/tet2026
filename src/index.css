@@ -4698,3 +4698,261 @@ button:disabled {
     padding: 0.6rem 0.8rem;
   }
 }
+
+/* ========== OẲN TÙ TÌ (Rock Paper Scissors) ========== */
+.ott-scoreboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1rem 0;
+  padding: 0.8rem 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+.ott-score {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.ott-score.you { color: #27ae60; }
+.ott-score.cpu { color: #e74c3c; }
+.ott-vs {
+  font-size: 1rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+.ott-choices {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.ott-choice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 1.5rem;
+  background: rgba(139, 0, 0, 0.4);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 16px;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+.ott-choice-btn:hover:not(:disabled) {
+  border-color: var(--gold);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+.ott-choice-btn.shaking {
+  animation: ottShake 0.15s ease-in-out infinite;
+}
+@keyframes ottShake {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-4px) rotate(-5deg); }
+  75% { transform: translateY(-4px) rotate(5deg); }
+}
+.ott-choice-emoji { font-size: 2.5rem; }
+.ott-choice-name { font-size: 0.9rem; font-weight: 600; color: var(--gold); }
+.ott-last-play {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}
+.ott-play-hands {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.ott-hand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+.ott-hand-emoji { font-size: 2.5rem; }
+.ott-hand-label { font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); }
+.ott-play-vs { font-size: 1.5rem; }
+.ott-play-result {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.3rem 1rem;
+  border-radius: 8px;
+}
+.ott-play-result.win { color: #27ae60; }
+.ott-play-result.lose { color: #e74c3c; }
+.ott-play-result.draw { color: var(--gold); }
+.ott-match-result {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin: 1rem 0;
+  font-weight: 600;
+}
+.ott-match-result.win {
+  background: rgba(39, 174, 96, 0.25);
+  border: 1px solid #27ae60;
+}
+.ott-match-result.lose {
+  background: rgba(231, 76, 60, 0.25);
+  border: 1px solid #e74c3c;
+}
+.ott-match-icon { font-size: 1.5rem; }
+
+/* ========== ĐOÁN SỐ MAY MẮN (Number Guessing) ========== */
+.ds-game-area {
+  margin: 1rem 0;
+}
+.ds-attempts {
+  text-align: center;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1rem;
+}
+.ds-guesses {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.ds-guess {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 215, 0, 0.15);
+}
+.ds-guess.correct {
+  background: rgba(39, 174, 96, 0.25);
+  border-color: #27ae60;
+}
+.ds-guess-num {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gold);
+  min-width: 3rem;
+  text-align: center;
+}
+.ds-guess-hint {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+.ds-input-area {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
+.ds-input {
+  width: 140px;
+  padding: 0.7rem 1rem;
+  font-size: 1.2rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+}
+.ds-input:focus {
+  border-color: var(--gold);
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+.ds-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.ds-guess-btn {
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #1a0a0a;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+.ds-guess-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+/* ========== XÓC ĐĨA (Coin Shaking) ========== */
+.xd-coins-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  flex-wrap: wrap;
+}
+.xd-coin {
+  font-size: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  animation: coinFlip 0.4s ease-out;
+}
+@keyframes coinFlip {
+  0% { transform: rotateY(0deg) scale(0.5); opacity: 0; }
+  50% { transform: rotateY(180deg) scale(1.2); }
+  100% { transform: rotateY(360deg) scale(1); opacity: 1; }
+}
+.xd-coin.ngua { background: rgba(231, 76, 60, 0.2); }
+.xd-coin.sap { background: rgba(52, 73, 94, 0.3); }
+.xd-coins-count {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold);
+  width: 100%;
+  text-align: center;
+  margin-top: 0.3rem;
+}
+.xd-shaking {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+.xd-bowl {
+  font-size: 4rem;
+  animation: bowlShake 0.2s ease-in-out infinite;
+}
+@keyframes bowlShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-5px, -3px) rotate(-5deg); }
+  50% { transform: translate(5px, -5px) rotate(5deg); }
+  75% { transform: translate(-3px, -2px) rotate(-3deg); }
+}
+.xd-shaking p {
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 600px) {
+  .ott-choices { gap: 0.6rem; }
+  .ott-choice-btn { padding: 0.8rem 1rem; }
+  .ott-choice-emoji { font-size: 2rem; }
+  .ds-input-area { flex-direction: column; align-items: center; }
+  .ds-input { width: 100%; max-width: 200px; }
+  .xd-coin { font-size: 2rem; width: 50px; height: 50px; }
+}

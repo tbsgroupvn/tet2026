@@ -86,9 +86,9 @@ const BADGES: Badge[] = [
     id: 'all-games',
     icon: '🌟',
     name: 'Nhân Viên Toàn Diện',
-    desc: 'Chơi thử tất cả 11 game trong ngày',
+    desc: 'Chơi thử tất cả 14 game trong ngày',
     check: () => {
-      const games = ['lac-li-xi', 'bau-cua', 'vong-quay', 'tai-xiu', 'bai-cao', 'boc-que', 'xin-xam', 'cung-ong-ba', 'do-vui-tbs', 'cao-ve-so', 'logistics-china'];
+      const games = ['lac-li-xi', 'bau-cua', 'vong-quay', 'tai-xiu', 'bai-cao', 'boc-que', 'xin-xam', 'cung-ong-ba', 'do-vui-tbs', 'cao-ve-so', 'logistics-china', 'oan-tu-ti', 'doan-so', 'xoc-dia'];
       return games.every(g => getPlaysToday(g) > 0);
     },
   },

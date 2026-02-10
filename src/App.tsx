@@ -19,6 +19,9 @@ import CungOngBa from './games/CungOngBa';
 import DoVuiTBS from './games/DoVuiTBS';
 import CaoVeSo from './games/CaoVeSo';
 import LogisticsChina from './games/LogisticsChina';
+import OanTuTi from './games/OanTuTi';
+import DoanSo from './games/DoanSo';
+import XocDia from './games/XocDia';
 import AdminDashboard from './components/AdminDashboard';
 import MouseTrail from './components/MouseTrail';
 import SoundControl from './components/SoundControl';
@@ -120,6 +123,9 @@ export default function App() {
           {currentGame === 'do-vui-tbs' && <DoVuiTBS {...gameProps} />}
           {currentGame === 'cao-ve-so' && <CaoVeSo {...gameProps} />}
           {currentGame === 'logistics-china' && <LogisticsChina {...gameProps} />}
+          {currentGame === 'oan-tu-ti' && <OanTuTi {...gameProps} />}
+          {currentGame === 'doan-so' && <DoanSo {...gameProps} />}
+          {currentGame === 'xoc-dia' && <XocDia {...gameProps} />}
         </main>
       </div>
     );
@@ -246,6 +252,27 @@ export default function App() {
                 description="Thử thách kiến thức logistics, XNK, Incoterms và thị trường Trung Quốc!"
                 color="#0e4d92"
                 onClick={() => selectGame('logistics-china')}
+              />
+              <GameCard
+                emoji="✊"
+                title="Oẳn Tù Tì"
+                description="Kéo Búa Bao kinh điển! Best of 5 — ai thắng 3 trước thì thắng ván!"
+                color="#8e44ad"
+                onClick={() => selectGame('oan-tu-ti')}
+              />
+              <GameCard
+                emoji="🔢"
+                title="Đoán Số May Mắn"
+                description="Tìm số bí mật từ 1-100 trong 7 lần đoán! Đoán sớm thắng lớn!"
+                color="#16a085"
+                onClick={() => selectGame('doan-so')}
+              />
+              <GameCard
+                emoji="🪙"
+                title="Xóc Đĩa"
+                description="Đoán Chẵn hay Lẻ — trò chơi dân gian kinh điển ngày Tết!"
+                color="#d35400"
+                onClick={() => selectGame('xoc-dia')}
               />
             </div>
 
