@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
+import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 
 interface TaiXiuProps {
   player: Player;
@@ -18,9 +19,11 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
   const [dice, setDice] = useState<number[]>([]);
   const [result, setResult] = useState<{ won: boolean; total: number; payout: number } | null>(null);
   const [greeting, setGreeting] = useState('');
+  const [remaining, setRemaining] = useState(getRemainingPlays('tai-xiu'));
 
   const roll = useCallback(() => {
     if (rolling || !choice || bet > player.totalCoins) return;
+    if (!canPlay('tai-xiu')) return;
     setRolling(true);
     setResult(null);
     setGreeting('');
@@ -55,6 +58,9 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
           onUpdate(updated);
           setResult({ won: false, total, payout: -bet });
         }
+
+        recordPlay('tai-xiu');
+        setRemaining(getRemainingPlays('tai-xiu'));
         setRolling(false);
       }
     }, 100);
@@ -73,6 +79,16 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
         <p className="game-instruction">
           Đoán tổng 3 xúc xắc: <strong>Tài</strong> (11-18) hoặc <strong>Xỉu</strong> (3-10). Đoán đúng thắng gấp đôi!
         </p>
+
+        {remaining > 0 ? (
+          <div className="limit-info">
+            🎲 Còn {remaining} lượt chơi hôm nay
+          </div>
+        ) : (
+          <div className="limit-notice">
+            🔒 Đã hết lượt chơi hôm nay. Quay lại vào ngày mai nhé!
+          </div>
+        )}
 
         <div className="tx-dice-area">
           {dice.length > 0 ? dice.map((d, i) => (
@@ -106,7 +122,7 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
           <button
             className={`tx-choice-btn tx-xiu ${choice === 'xiu' ? 'selected' : ''}`}
             onClick={() => !rolling && setChoice('xiu')}
-            disabled={rolling}
+            disabled={rolling || remaining <= 0}
           >
             <span className="tx-choice-label">XỈU</span>
             <span className="tx-choice-range">3 - 10</span>
@@ -114,7 +130,7 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
           <button
             className={`tx-choice-btn tx-tai ${choice === 'tai' ? 'selected' : ''}`}
             onClick={() => !rolling && setChoice('tai')}
-            disabled={rolling}
+            disabled={rolling || remaining <= 0}
           >
             <span className="tx-choice-label">TÀI</span>
             <span className="tx-choice-range">11 - 18</span>
@@ -138,9 +154,9 @@ export default function TaiXiu({ player, onUpdate, onBack }: TaiXiuProps) {
         <button
           className="tx-roll-btn"
           onClick={roll}
-          disabled={rolling || !choice || bet > player.totalCoins}
+          disabled={rolling || !choice || bet > player.totalCoins || remaining <= 0}
         >
-          {rolling ? '🎲 Đang lắc...' : '🎲 Lắc Xúc Xắc!'}
+          {rolling ? '🎲 Đang lắc...' : remaining <= 0 ? 'Hết lượt hôm nay' : '🎲 Lắc Xúc Xắc!'}
         </button>
       </div>
     </div>

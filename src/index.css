@@ -1770,3 +1770,195 @@ button:disabled {
     font-size: 2rem;
   }
 }
+
+/* ============ Fortune Form (Bốc Quẻ / Xin Xăm) ============ */
+.fortune-form {
+  background: var(--bg-card);
+  border: 2px solid var(--gold-dark);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 450px;
+  margin: 1.5rem auto;
+}
+
+.fortune-field {
+  margin-bottom: 1.2rem;
+}
+
+.fortune-field label {
+  display: block;
+  color: var(--gold);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.fortune-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--gold-dark);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.fortune-input:focus {
+  border-color: var(--gold);
+}
+
+.fortune-date-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.fortune-select {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  border: 2px solid var(--gold-dark);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.fortune-select option {
+  background: #2d0808;
+  color: #fff;
+}
+
+.fortune-select:focus {
+  border-color: var(--gold);
+}
+
+.fortune-submit-btn {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--red-primary), var(--red-dark));
+  color: var(--gold);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.fortune-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.fortune-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fortune-info-display {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid var(--gold-dark);
+  border-radius: 12px;
+  padding: 0.8rem 1.2rem;
+  margin: 1rem auto;
+  text-align: center;
+  max-width: 450px;
+}
+
+.fortune-info-display p {
+  margin: 0.2rem 0;
+  color: var(--gold);
+  font-size: 0.95rem;
+}
+
+/* ============ Limit Notice ============ */
+.limit-notice {
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.5);
+  border-radius: 10px;
+  padding: 0.8rem 1.2rem;
+  margin: 0.8rem auto;
+  text-align: center;
+  max-width: 450px;
+  color: #ff6b6b;
+  font-size: 0.9rem;
+}
+
+.limit-info {
+  background: rgba(46, 204, 113, 0.15);
+  border: 1px solid rgba(46, 204, 113, 0.4);
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  margin: 0.8rem auto;
+  text-align: center;
+  max-width: 450px;
+  color: #2ecc71;
+  font-size: 0.9rem;
+}
+
+/* ============ Cúng Ông Bà - 8 pairs grid ============ */
+.cob-grid-8 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.cob-timer {
+  font-weight: bold;
+  color: var(--gold);
+}
+
+.cob-timer.urgent {
+  color: #e74c3c;
+  animation: pulse-text 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-text {
+  from { opacity: 1; }
+  to { opacity: 0.5; }
+}
+
+.cob-failed {
+  text-align: center;
+  background: rgba(231, 76, 60, 0.15);
+  border: 2px solid rgba(231, 76, 60, 0.4);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.cob-failed h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #ff6b6b;
+}
+
+.cob-failed p {
+  margin: 0.3rem 0;
+  color: #ffb3b3;
+}
+
+@media (max-width: 480px) {
+  .fortune-date-row {
+    flex-direction: column;
+  }
+
+  .cob-grid-8 {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+  }
+
+  .cob-grid-8 .cob-card {
+    height: 70px;
+  }
+
+  .cob-grid-8 .cob-card-emoji {
+    font-size: 1.5rem;
+  }
+
+  .cob-grid-8 .cob-card-name {
+    font-size: 0.55rem;
+  }
+}

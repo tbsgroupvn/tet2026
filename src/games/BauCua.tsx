@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
+import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 
 interface BauCuaProps {
   player: Player;
@@ -27,6 +28,7 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
   const [result, setResult] = useState<{ won: number; details: string } | null>(null);
   const [betAmount, setBetAmount] = useState(10);
   const [greeting, setGreeting] = useState('');
+  const [remaining, setRemaining] = useState(getRemainingPlays('bau-cua'));
 
   const totalBet = Object.values(bets).reduce((s, v) => s + v, 0);
 
@@ -48,10 +50,10 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
 
   const rollDice = useCallback(() => {
     if (rolling || totalBet === 0) return;
+    if (!canPlay('bau-cua')) return;
     setRolling(true);
     setResult(null);
 
-    // Animate dice rolling
     let count = 0;
     const interval = setInterval(() => {
       setDice([
@@ -62,7 +64,6 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
       count++;
       if (count > 15) {
         clearInterval(interval);
-        // Final result
         const finalDice = [
           SYMBOLS[Math.floor(Math.random() * 6)].id,
           SYMBOLS[Math.floor(Math.random() * 6)].id,
@@ -70,14 +71,13 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
         ];
         setDice(finalDice);
 
-        // Calculate winnings
         let winnings = 0;
         const matchDetails: string[] = [];
         for (const [symbolId, bet] of Object.entries(bets)) {
           const matches = finalDice.filter((d) => d === symbolId).length;
           if (matches > 0) {
             const won = bet * matches;
-            winnings += won + bet; // return bet + winnings
+            winnings += won + bet;
             const sym = SYMBOLS.find((s) => s.id === symbolId)!;
             matchDetails.push(`${sym.emoji} x${matches} = +${won}`);
           }
@@ -100,6 +100,8 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
           onUpdate(updated);
         }
 
+        recordPlay('bau-cua');
+        setRemaining(getRemainingPlays('bau-cua'));
         setBets({});
         setRolling(false);
       }
@@ -114,6 +116,16 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
         <p className="game-instruction">
           Đặt cược vào biểu tượng, lắc 3 xúc xắc. Trúng bao nhiêu thưởng bấy nhiêu!
         </p>
+
+        {remaining > 0 ? (
+          <div className="limit-info">
+            🎲 Còn {remaining} lượt chơi hôm nay
+          </div>
+        ) : (
+          <div className="limit-notice">
+            🔒 Đã hết lượt chơi hôm nay. Quay lại vào ngày mai nhé!
+          </div>
+        )}
 
         <div className="bc-dice-area">
           <div className="bc-dice-row">
@@ -166,8 +178,8 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
           {SYMBOLS.map((sym) => (
             <div
               key={sym.id}
-              className={`bc-cell ${bets[sym.id] ? 'has-bet' : ''} ${rolling ? 'disabled' : ''}`}
-              onClick={() => placeBet(sym.id)}
+              className={`bc-cell ${bets[sym.id] ? 'has-bet' : ''} ${rolling || remaining <= 0 ? 'disabled' : ''}`}
+              onClick={() => remaining > 0 && placeBet(sym.id)}
             >
               <span className="bc-emoji">{sym.emoji}</span>
               <span className="bc-name">{sym.name}</span>
@@ -184,8 +196,8 @@ export default function BauCua({ player, onUpdate, onBack }: BauCuaProps) {
             <button className="bc-clear" onClick={clearBets} disabled={rolling || totalBet === 0}>
               Xóa Cược
             </button>
-            <button className="bc-roll" onClick={rollDice} disabled={rolling || totalBet === 0}>
-              {rolling ? 'Đang lắc...' : '🎲 Lắc Xúc Xắc!'}
+            <button className="bc-roll" onClick={rollDice} disabled={rolling || totalBet === 0 || remaining <= 0}>
+              {rolling ? 'Đang lắc...' : remaining <= 0 ? 'Hết lượt' : '🎲 Lắc Xúc Xắc!'}
             </button>
           </div>
         </div>

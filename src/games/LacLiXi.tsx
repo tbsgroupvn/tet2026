@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
+import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 
 interface LacLiXiProps {
   player: Player;
@@ -16,7 +17,7 @@ const ENVELOPES = [
   { coins: 50, label: '50 xu', weight: 15, message: 'Hên quá! Năm mới phát đạt!' },
   { coins: 100, label: '100 xu', weight: 7, message: 'Đại cát đại lợi!' },
   { coins: 200, label: '200 xu', weight: 2, message: 'JACKPOT! Vạn sự như ý!' },
-  { coins: 500, label: '500 xu', weight: 1, message: '🎆 SIÊU JACKPOT! Phú quý mãn đường!' },
+  { coins: 500, label: '500 xu', weight: 1, message: 'SIÊU JACKPOT! Phú quý mãn đường!' },
 ];
 
 function getRandomEnvelope() {
@@ -35,9 +36,11 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
   const [opened, setOpened] = useState(false);
   const [showHistory, setShowHistory] = useState<{ coins: number; label: string }[]>([]);
   const [greeting, setGreeting] = useState('');
+  const [remaining, setRemaining] = useState(getRemainingPlays('lac-li-xi'));
 
   const handleShake = useCallback(() => {
     if (isShaking) return;
+    if (!canPlay('lac-li-xi')) return;
     setIsShaking(true);
     setOpened(false);
     setResult(null);
@@ -51,7 +54,10 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
 
   const handleOpen = () => {
     if (!result || opened) return;
+    if (!canPlay('lac-li-xi')) return;
     setOpened(true);
+    recordPlay('lac-li-xi');
+    setRemaining(getRemainingPlays('lac-li-xi'));
     setGreeting(getGreeting(player.department));
     const updated = addCoins(player, result.coins, 'Lắc Lì Xì', `Nhận ${result.label}`);
     onUpdate(updated);
@@ -67,15 +73,25 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
           Lắc lì xì để nhận xu may mắn! Mỗi phong bao chứa phần thưởng bất ngờ!
         </p>
 
+        {remaining > 0 ? (
+          <div className="limit-info">
+            🎁 Còn {remaining} lượt lắc hôm nay
+          </div>
+        ) : (
+          <div className="limit-notice">
+            🔒 Đã hết lượt lắc hôm nay. Quay lại vào ngày mai nhé!
+          </div>
+        )}
+
         <div className="lixi-area">
           <div
             className={`lixi-envelope ${isShaking ? 'shaking' : ''} ${result && !opened ? 'ready' : ''} ${opened ? 'opened' : ''}`}
-            onClick={result && !opened ? handleOpen : handleShake}
+            onClick={result && !opened ? handleOpen : remaining > 0 ? handleShake : undefined}
           >
             {!result && !isShaking && (
               <div className="envelope-front">
                 <span className="envelope-icon">🧧</span>
-                <span className="envelope-text">Nhấn để lắc!</span>
+                <span className="envelope-text">{remaining > 0 ? 'Nhấn để lắc!' : 'Hết lượt!'}</span>
               </div>
             )}
             {isShaking && (
@@ -94,9 +110,11 @@ export default function LacLiXi({ player, onUpdate, onBack }: LacLiXiProps) {
               <div className="envelope-result">
                 <span className="result-coins">🪙 +{result.coins}</span>
                 <span className="result-message">{result.message}</span>
-                <button className="shake-again-btn" onClick={(e) => { e.stopPropagation(); handleShake(); }}>
-                  Lắc Tiếp! 🧧
-                </button>
+                {remaining > 0 && (
+                  <button className="shake-again-btn" onClick={(e) => { e.stopPropagation(); handleShake(); }}>
+                    Lắc Tiếp! 🧧
+                  </button>
+                )}
               </div>
             )}
           </div>

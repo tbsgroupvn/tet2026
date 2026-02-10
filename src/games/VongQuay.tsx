@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
+import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 
 interface VongQuayProps {
   player: Player;
@@ -37,11 +38,14 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
   const [rotation, setRotation] = useState(0);
   const [result, setResult] = useState<typeof SLICES[0] | null>(null);
   const [greeting, setGreeting] = useState('');
+  const [remaining, setRemaining] = useState(getRemainingPlays('vong-quay'));
   const wheelRef = useRef<SVGGElement>(null);
+  const baseRotationRef = useRef(0);
 
   const spin = useCallback(() => {
     if (spinning) return;
     if (player.totalCoins < SPIN_COST) return;
+    if (!canPlay('vong-quay')) return;
 
     setSpinning(true);
     setResult(null);
@@ -50,14 +54,22 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
     const afterCost = addCoins(player, -SPIN_COST, 'Vòng Quay', `Phí quay: -${SPIN_COST} xu`);
     onUpdate(afterCost);
 
+    recordPlay('vong-quay');
+    setRemaining(getRemainingPlays('vong-quay'));
+
     const winnerIdx = getWeightedIndex();
     const sliceAngle = 360 / SLICES.length;
-    // Calculate where the winner slice needs to land (at top/pointer position)
-    const targetAngle = 360 - (winnerIdx * sliceAngle + sliceAngle / 2);
-    const spins = 5 + Math.random() * 3; // 5-8 full spins
-    const finalRotation = rotation + spins * 360 + targetAngle;
+    // Calculate target: the winning slice should end at the top (pointer at 0deg / 12 o'clock)
+    // Slices start from 3 o'clock (0deg), so we need to offset by -90deg
+    // The center of slice i is at (i + 0.5) * sliceAngle
+    // We want that at top (270deg in SVG coordinates, or equivalently -90deg)
+    const targetSliceCenter = (winnerIdx + 0.5) * sliceAngle;
+    const targetAngle = 360 - targetSliceCenter + 270; // align to top pointer
+    const spins = 5 + Math.floor(Math.random() * 3); // 5-7 full spins
+    const newRotation = baseRotationRef.current + spins * 360 + (targetAngle - (baseRotationRef.current % 360) + 360) % 360;
 
-    setRotation(finalRotation);
+    setRotation(newRotation);
+    baseRotationRef.current = newRotation;
 
     setTimeout(() => {
       const prize = SLICES[winnerIdx];
@@ -71,7 +83,7 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
       }
       setSpinning(false);
     }, 4000);
-  }, [spinning, rotation, player, onUpdate]);
+  }, [spinning, player, onUpdate]);
 
   const sliceAngle = 360 / SLICES.length;
   const radius = 150;
@@ -84,6 +96,16 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
         <p className="game-instruction">
           Quay vòng quay để nhận xu! Chi phí: 🪙 {SPIN_COST} xu/lượt
         </p>
+
+        {remaining > 0 ? (
+          <div className="limit-info">
+            🎡 Còn {remaining} lượt quay hôm nay
+          </div>
+        ) : (
+          <div className="limit-notice">
+            🔒 Đã hết lượt quay hôm nay. Quay lại vào ngày mai nhé!
+          </div>
+        )}
 
         <div className="wheel-container">
           <div className="wheel-pointer">▼</div>
@@ -167,9 +189,9 @@ export default function VongQuay({ player, onUpdate, onBack }: VongQuayProps) {
         <button
           className="spin-btn"
           onClick={spin}
-          disabled={spinning || player.totalCoins < SPIN_COST}
+          disabled={spinning || player.totalCoins < SPIN_COST || remaining <= 0}
         >
-          {spinning ? '🌀 Đang quay...' : player.totalCoins < SPIN_COST ? 'Không đủ xu' : `🎡 Quay (🪙 ${SPIN_COST} xu)`}
+          {spinning ? '🌀 Đang quay...' : remaining <= 0 ? 'Hết lượt hôm nay' : player.totalCoins < SPIN_COST ? 'Không đủ xu' : `🎡 Quay (🪙 ${SPIN_COST} xu)`}
         </button>
       </div>
     </div>

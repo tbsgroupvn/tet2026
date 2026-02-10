@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
+import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 
 interface CungOngBaProps {
   player: Player;
@@ -30,6 +31,10 @@ const ALL_OFFERINGS: Offering[] = [
   { id: 'mut', name: 'Mứt Tết', emoji: '🍬' },
 ];
 
+const TOTAL_PAIRS = 8;
+const TIME_LIMIT = 90; // seconds
+const MAX_MOVES = 30; // max moves allowed
+
 function shuffleArray<T>(arr: T[]): T[] {
   const result = [...arr];
   for (let i = result.length - 1; i > 0; i--) {
@@ -46,11 +51,16 @@ export default function CungOngBa({ player, onUpdate, onBack }: CungOngBaProps) 
   const [matches, setMatches] = useState(0);
   const [moves, setMoves] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const [gameFailed, setGameFailed] = useState(false);
   const [greeting, setGreeting] = useState('');
-  const [totalPairs] = useState(6);
+  const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [remaining, setRemaining] = useState(getRemainingPlays('cung-ong-ba'));
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const initGame = useCallback(() => {
-    const selected = shuffleArray(ALL_OFFERINGS).slice(0, totalPairs);
+    if (!canPlay('cung-ong-ba')) return;
+    const selected = shuffleArray(ALL_OFFERINGS).slice(0, TOTAL_PAIRS);
     const doubled = [...selected, ...selected].map((o, idx) => ({
       ...o,
       flipped: false,
@@ -63,16 +73,41 @@ export default function CungOngBa({ player, onUpdate, onBack }: CungOngBaProps) 
     setMatches(0);
     setMoves(0);
     setGameOver(false);
+    setGameFailed(false);
     setGreeting('');
-  }, [totalPairs]);
+    setTimeLeft(TIME_LIMIT);
+    setGameStarted(true);
+  }, []);
 
   useEffect(() => {
-    initGame();
+    if (canPlay('cung-ong-ba')) {
+      initGame();
+    }
   }, [initGame]);
+
+  // Timer countdown
+  useEffect(() => {
+    if (gameStarted && !gameOver && !gameFailed) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current!);
+            setGameFailed(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => {
+        if (timerRef.current) clearInterval(timerRef.current);
+      };
+    }
+  }, [gameStarted, gameOver, gameFailed]);
 
   useEffect(() => {
     if (firstPick !== null && secondPick !== null) {
-      setMoves((m) => m + 1);
+      const newMoves = moves + 1;
+      setMoves(newMoves);
       const first = cards[firstPick];
       const second = cards[secondPick];
 
@@ -85,10 +120,16 @@ export default function CungOngBa({ player, onUpdate, onBack }: CungOngBaProps) 
           );
           setMatches((m) => {
             const newM = m + 1;
-            if (newM === totalPairs) {
-              const bonus = Math.max(10, 60 - (moves * 2));
+            if (newM === TOTAL_PAIRS) {
+              if (timerRef.current) clearInterval(timerRef.current);
+              const timeUsed = TIME_LIMIT - timeLeft;
+              const timeBonus = Math.max(0, Math.floor((TIME_LIMIT - timeUsed) / 3));
+              const moveBonus = Math.max(0, (MAX_MOVES - newMoves) * 2);
+              const bonus = Math.max(10, 30 + timeBonus + moveBonus);
               setGreeting(getGreeting(player.department));
-              const updated = addCoins(player, bonus, 'Cúng Ông Bà', `Hoàn thành mâm cỗ! ${moves + 1} lượt → +${bonus} xu`);
+              recordPlay('cung-ong-ba');
+              setRemaining(getRemainingPlays('cung-ong-ba'));
+              const updated = addCoins(player, bonus, 'Cúng Ông Bà', `Hoàn thành! ${newMoves} lượt, ${timeUsed}s → +${bonus} xu`);
               onUpdate(updated);
               setGameOver(true);
             }
@@ -98,21 +139,37 @@ export default function CungOngBa({ player, onUpdate, onBack }: CungOngBaProps) 
           setSecondPick(null);
         }, 500);
       } else {
-        setTimeout(() => {
-          setCards((prev) =>
-            prev.map((c, i) =>
-              i === firstPick || i === secondPick ? { ...c, flipped: false } : c
-            )
-          );
-          setFirstPick(null);
-          setSecondPick(null);
-        }, 800);
+        // Check max moves
+        if (newMoves >= MAX_MOVES) {
+          setTimeout(() => {
+            setCards((prev) =>
+              prev.map((c, i) =>
+                i === firstPick || i === secondPick ? { ...c, flipped: false } : c
+              )
+            );
+            setFirstPick(null);
+            setSecondPick(null);
+            if (timerRef.current) clearInterval(timerRef.current);
+            setGameFailed(true);
+          }, 800);
+        } else {
+          setTimeout(() => {
+            setCards((prev) =>
+              prev.map((c, i) =>
+                i === firstPick || i === secondPick ? { ...c, flipped: false } : c
+              )
+            );
+            setFirstPick(null);
+            setSecondPick(null);
+          }, 800);
+        }
       }
     }
-  }, [firstPick, secondPick, cards, totalPairs, moves, player, onUpdate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstPick, secondPick]);
 
   const handleFlip = (index: number) => {
-    if (gameOver) return;
+    if (gameOver || gameFailed) return;
     if (cards[index].flipped || cards[index].matched) return;
     if (firstPick !== null && secondPick !== null) return;
 
@@ -127,21 +184,50 @@ export default function CungOngBa({ player, onUpdate, onBack }: CungOngBaProps) 
     }
   };
 
+  const formatTime = (s: number) => {
+    const min = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${min}:${sec.toString().padStart(2, '0')}`;
+  };
+
+  if (remaining <= 0 && !gameStarted) {
+    return (
+      <div className="game-page cung-ong-ba">
+        <button className="back-btn" onClick={onBack}>← Quay Lại</button>
+        <div className="game-content">
+          <h2>🪷 Cúng Ông Bà Tổ Tiên</h2>
+          <div className="limit-notice">
+            🔒 Đã hết lượt chơi hôm nay. Quay lại vào ngày mai nhé!
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="game-page cung-ong-ba">
       <button className="back-btn" onClick={onBack}>← Quay Lại</button>
       <div className="game-content">
         <h2>🪷 Cúng Ông Bà Tổ Tiên</h2>
         <p className="game-instruction">
-          Lật tìm cặp lễ vật giống nhau để bày mâm cỗ cúng Ông Bà! Càng ít lượt càng nhiều xu!
+          Lật tìm {TOTAL_PAIRS} cặp lễ vật trong {TIME_LIMIT}s và tối đa {MAX_MOVES} lượt lật! Càng nhanh càng nhiều xu!
         </p>
 
+        {remaining > 0 && !gameOver && !gameFailed && (
+          <div className="limit-info">
+            🪷 Còn {remaining} lượt chơi hôm nay
+          </div>
+        )}
+
         <div className="cob-stats">
-          <span>🎯 Đã tìm: {matches}/{totalPairs}</span>
-          <span>👆 Lượt lật: {moves}</span>
+          <span>🎯 Đã tìm: {matches}/{TOTAL_PAIRS}</span>
+          <span>👆 Lượt: {moves}/{MAX_MOVES}</span>
+          <span className={`cob-timer ${timeLeft <= 15 ? 'urgent' : ''}`}>
+            ⏱️ {formatTime(timeLeft)}
+          </span>
         </div>
 
-        <div className="cob-grid">
+        <div className="cob-grid cob-grid-8">
           {cards.map((card, i) => (
             <div
               key={i}
@@ -164,18 +250,35 @@ export default function CungOngBa({ player, onUpdate, onBack }: CungOngBaProps) 
         {gameOver && (
           <div className="cob-complete">
             <h3>🎊 Mâm cỗ đã bày xong!</h3>
-            <p>Hoàn thành trong <strong>{moves}</strong> lượt lật</p>
+            <p>Hoàn thành trong <strong>{moves}</strong> lượt lật, <strong>{TIME_LIMIT - timeLeft}</strong> giây</p>
             <p className="cob-bonus">
-              🪙 +{Math.max(10, 60 - (moves * 2))} xu
+              🪙 +{Math.max(10, 30 + Math.max(0, Math.floor(timeLeft / 3)) + Math.max(0, (MAX_MOVES - moves) * 2))} xu
             </p>
             {greeting && (
               <div className="greeting-box">
                 <p className="greeting-text">🌸 {greeting}</p>
               </div>
             )}
-            <button className="bq-again-btn" onClick={initGame}>
-              🪷 Bày Mâm Cỗ Mới
-            </button>
+            {remaining > 0 && (
+              <button className="bq-again-btn" onClick={initGame}>
+                🪷 Bày Mâm Cỗ Mới
+              </button>
+            )}
+          </div>
+        )}
+
+        {gameFailed && !gameOver && (
+          <div className="cob-failed">
+            <h3>😢 Chưa hoàn thành!</h3>
+            <p>
+              {timeLeft <= 0 ? 'Hết thời gian rồi!' : `Đã hết ${MAX_MOVES} lượt lật!`}
+            </p>
+            <p>Đã tìm được {matches}/{TOTAL_PAIRS} cặp lễ vật.</p>
+            {remaining > 0 && (
+              <button className="bq-again-btn" onClick={initGame}>
+                🪷 Thử Lại
+              </button>
+            )}
           </div>
         )}
       </div>

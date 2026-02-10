@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
+import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 
 interface XinXamProps {
   player: Player;
@@ -76,10 +77,32 @@ function getRandomXam() {
   return XAM_LIST[4];
 }
 
+function getZodiac(year: number): string {
+  const zodiacs = ['Thân (Khỉ)', 'Dậu (Gà)', 'Tuất (Chó)', 'Hợi (Lợn)', 'Tý (Chuột)', 'Sửu (Trâu)', 'Dần (Hổ)', 'Mão (Mèo)', 'Thìn (Rồng)', 'Tỵ (Rắn)', 'Ngọ (Ngựa)', 'Mùi (Dê)'];
+  return zodiacs[year % 12];
+}
+
+function getElement(year: number): string {
+  const elements = ['Kim', 'Kim', 'Thủy', 'Thủy', 'Mộc', 'Mộc', 'Hỏa', 'Hỏa', 'Thổ', 'Thổ'];
+  return elements[year % 10];
+}
+
 export default function XinXam({ player, onUpdate, onBack }: XinXamProps) {
+  const [fullName, setFullName] = useState(player.name);
+  const [birthDay, setBirthDay] = useState('');
+  const [birthMonth, setBirthMonth] = useState('');
+  const [birthYear, setBirthYear] = useState('');
+  const [infoSubmitted, setInfoSubmitted] = useState(false);
   const [shaking, setShaking] = useState(false);
   const [result, setResult] = useState<typeof XAM_LIST[0] | null>(null);
   const [greeting, setGreeting] = useState('');
+  const [coinAwarded, setCoinAwarded] = useState(!canPlay('xin-xam'));
+  const remaining = getRemainingPlays('xin-xam');
+
+  const handleSubmitInfo = () => {
+    if (!fullName.trim() || !birthDay || !birthMonth || !birthYear) return;
+    setInfoSubmitted(true);
+  };
 
   const handleXinXam = () => {
     if (shaking) return;
@@ -91,11 +114,79 @@ export default function XinXam({ player, onUpdate, onBack }: XinXamProps) {
       const xam = getRandomXam();
       setResult(xam);
       setGreeting(getGreeting(player.department));
-      const updated = addCoins(player, xam.coins, 'Xin Xăm', `Xăm số ${xam.number}: +${xam.coins} xu`);
-      onUpdate(updated);
+
+      if (!coinAwarded && canPlay('xin-xam')) {
+        recordPlay('xin-xam');
+        const updated = addCoins(player, xam.coins, 'Xin Xăm', `Xăm số ${xam.number}: +${xam.coins} xu`);
+        onUpdate(updated);
+        setCoinAwarded(true);
+      }
+
       setShaking(false);
     }, 3000);
   };
+
+  const yearNum = parseInt(birthYear);
+  const zodiac = yearNum ? getZodiac(yearNum) : '';
+  const element = yearNum ? getElement(yearNum) : '';
+
+  if (!infoSubmitted) {
+    return (
+      <div className="game-page xin-xam">
+        <button className="back-btn" onClick={onBack}>← Quay Lại</button>
+        <div className="game-content">
+          <h2>🛕 Xin Xăm Chùa Đầu Năm</h2>
+          <p className="game-instruction">
+            Nhập thông tin để xin xăm xem vận mệnh năm mới!
+          </p>
+
+          <div className="fortune-form">
+            <div className="fortune-field">
+              <label>Họ và Tên:</label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Nguyễn Văn A"
+                className="fortune-input"
+              />
+            </div>
+            <div className="fortune-field">
+              <label>Ngày sinh:</label>
+              <div className="fortune-date-row">
+                <select value={birthDay} onChange={(e) => setBirthDay(e.target.value)} className="fortune-select">
+                  <option value="">Ngày</option>
+                  {Array.from({ length: 31 }, (_, i) => (
+                    <option key={i + 1} value={String(i + 1)}>{i + 1}</option>
+                  ))}
+                </select>
+                <select value={birthMonth} onChange={(e) => setBirthMonth(e.target.value)} className="fortune-select">
+                  <option value="">Tháng</option>
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <option key={i + 1} value={String(i + 1)}>Tháng {i + 1}</option>
+                  ))}
+                </select>
+                <select value={birthYear} onChange={(e) => setBirthYear(e.target.value)} className="fortune-select">
+                  <option value="">Năm</option>
+                  {Array.from({ length: 60 }, (_, i) => {
+                    const y = 2008 - i;
+                    return <option key={y} value={String(y)}>{y}</option>;
+                  })}
+                </select>
+              </div>
+            </div>
+            <button
+              className="fortune-submit-btn"
+              onClick={handleSubmitInfo}
+              disabled={!fullName.trim() || !birthDay || !birthMonth || !birthYear}
+            >
+              🛕 Xin Xăm
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="game-page xin-xam">
@@ -105,6 +196,22 @@ export default function XinXam({ player, onUpdate, onBack }: XinXamProps) {
         <p className="game-instruction">
           Thành tâm lắc ống xăm, rút một thẻ xăm để biết vận mệnh năm mới!
         </p>
+
+        <div className="fortune-info-display">
+          <p><strong>{fullName}</strong> — Sinh ngày {birthDay}/{birthMonth}/{birthYear}</p>
+          <p>Tuổi: {zodiac} | Mệnh: {element}</p>
+        </div>
+
+        {coinAwarded && (
+          <div className="limit-notice">
+            🔒 Đã nhận xu hôm nay. Bạn vẫn có thể xin xăm xem vận mệnh (không nhận thêm xu).
+          </div>
+        )}
+        {!coinAwarded && remaining > 0 && (
+          <div className="limit-info">
+            🎁 Còn {remaining} lượt nhận xu hôm nay
+          </div>
+        )}
 
         <div className="xam-temple">
           <div className="xam-decor">🏮 ☸️ 🏮</div>

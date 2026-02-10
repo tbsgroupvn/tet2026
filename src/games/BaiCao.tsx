@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import type { Player } from '../types';
 import { addCoins } from '../utils/storage';
 import { getGreeting } from '../utils/greetings';
+import { canPlay, recordPlay, getRemainingPlays } from '../utils/limits';
 
 interface BaiCaoProps {
   player: Player;
@@ -60,9 +61,11 @@ export default function BaiCao({ player, onUpdate, onBack }: BaiCaoProps) {
   const [revealed, setRevealed] = useState(false);
   const [result, setResult] = useState<{ won: boolean; tie: boolean; playerScore: number; dealerScore: number } | null>(null);
   const [greeting, setGreeting] = useState('');
+  const [remaining, setRemaining] = useState(getRemainingPlays('bai-cao'));
 
   const deal = useCallback(() => {
     if (dealing || bet > player.totalCoins) return;
+    if (!canPlay('bai-cao')) return;
     setDealing(true);
     setRevealed(false);
     setResult(null);
@@ -100,6 +103,8 @@ export default function BaiCao({ player, onUpdate, onBack }: BaiCaoProps) {
         onUpdate(updated);
       }
 
+      recordPlay('bai-cao');
+      setRemaining(getRemainingPlays('bai-cao'));
       setDealing(false);
     }, 1500);
   }, [dealing, bet, player, onUpdate]);
@@ -128,6 +133,16 @@ export default function BaiCao({ player, onUpdate, onBack }: BaiCaoProps) {
         <p className="game-instruction">
           Chia 3 lá bài, tính điểm hàng đơn vị. Ai cao hơn thắng! Được 8-9 nút thắng gấp đôi!
         </p>
+
+        {remaining > 0 ? (
+          <div className="limit-info">
+            🃏 Còn {remaining} lượt chơi hôm nay
+          </div>
+        ) : (
+          <div className="limit-notice">
+            🔒 Đã hết lượt chơi hôm nay. Quay lại vào ngày mai nhé!
+          </div>
+        )}
 
         <div className="bacao-table">
           <div className="bacao-hand">
@@ -203,9 +218,9 @@ export default function BaiCao({ player, onUpdate, onBack }: BaiCaoProps) {
         <button
           className="tx-roll-btn"
           onClick={deal}
-          disabled={dealing || bet > player.totalCoins}
+          disabled={dealing || bet > player.totalCoins || remaining <= 0}
         >
-          {dealing ? '🃏 Đang chia bài...' : '🃏 Chia Bài!'}
+          {dealing ? '🃏 Đang chia bài...' : remaining <= 0 ? 'Hết lượt hôm nay' : '🃏 Chia Bài!'}
         </button>
       </div>
     </div>
