@@ -26,8 +26,9 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [verifying, setVerifying] = useState(false);
 
   const handleVerifyAccess = async () => {
-    // Pre-init AudioContext on this early interaction so playGong() won't lag later
-    initAudio();
+    // Resume pre-created AudioContext on this early gesture so playGong() won't lag later
+    // Use setTimeout(0) so even the resume() doesn't block the UI update
+    setTimeout(() => initAudio(), 0);
     if (!accessCode.trim()) {
       setAccessError('Vui lòng nhập mã truy cập');
       return;

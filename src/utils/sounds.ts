@@ -8,6 +8,15 @@ let bgMusicTimeout: ReturnType<typeof setTimeout> | null = null;
 let bgMusicPlaying = false;
 let melodyIndex = 0;
 
+// Pre-create AudioContext at module load (deferred so it doesn't block initial render).
+// By the time any click handler fires, audioCtx is already available.
+// The context starts 'suspended' — resumed on first user gesture via initAudio().
+setTimeout(() => {
+  if (!audioCtx) {
+    try { audioCtx = new AudioContext(); } catch { /* not supported */ }
+  }
+}, 0);
+
 function getCtx(): AudioContext {
   if (!audioCtx) {
     audioCtx = new AudioContext();
@@ -18,13 +27,15 @@ function getCtx(): AudioContext {
   return audioCtx;
 }
 
-// Pre-initialize AudioContext on first user interaction to avoid lag later.
-// Call this from any early click/touch handler (e.g. access code verify).
+// Resume AudioContext on user gesture. Since the context is pre-created above,
+// this is now a fast ~0ms call (just .resume()), no longer blocking ~200ms.
 export function initAudio() {
-  if (audioCtx) return;
-  try {
-    audioCtx = new AudioContext();
-  } catch { /* not supported */ }
+  if (audioCtx) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return;
+  }
+  // Fallback if pre-creation hasn't fired yet (shouldn't happen in practice)
+  try { audioCtx = new AudioContext(); } catch { /* not supported */ }
 }
 
 // Vietnamese pentatonic scale (Hơi Nam) - C D E G A across octaves
