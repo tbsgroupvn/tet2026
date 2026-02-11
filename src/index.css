@@ -1946,40 +1946,165 @@ textarea:focus-visible {
 @media (max-width: 768px) {
   .header-inner {
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    gap: 0.4rem;
+    padding: 0.5rem 0.8rem;
   }
 
+  .header-brand {
+    gap: 0.5rem;
+  }
+
+  .header-logo-img {
+    width: 36px;
+  }
+
+  .header-title {
+    font-size: 1rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.7rem;
+  }
+
+  /* Nav: horizontal scroll instead of wrap */
   .header-nav {
     order: 3;
     width: 100%;
-    justify-content: center;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    justify-content: flex-start;
+    gap: 0.4rem;
+    padding-bottom: 2px;
+  }
+
+  .header-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .nav-btn {
-    font-size: 0.75rem;
-    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    padding: 0.55rem 0.8rem;
+    white-space: nowrap;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .header-player {
+    gap: 0.5rem;
+  }
+
+  .player-name {
+    font-size: 0.8rem;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .player-coins {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.6rem;
   }
 
   .main-content {
-    padding: 1rem;
+    padding: 0.8rem;
+  }
+
+  .welcome-banner {
+    padding: 1.2rem;
+    margin-bottom: 1rem;
   }
 
   .welcome-banner h2 {
     font-size: 1.3rem;
   }
 
-  .games-grid {
-    grid-template-columns: 1fr;
+  .welcome-wish {
+    font-size: 0.85rem;
+    line-height: 1.5;
   }
 
+  .tet-greeting {
+    font-size: 0.9rem;
+  }
+
+  .welcome-stats {
+    gap: 1.2rem;
+  }
+
+  /* Game cards: compact 2-column on tablets, 1-col on phones */
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+
+  .game-card {
+    padding: 1rem 0.8rem;
+  }
+
+  .game-card-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .game-card-title {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .game-card-desc {
+    font-size: 0.75rem;
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .game-card-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  /* Game pages */
+  .game-page {
+    padding: 0 0.3rem;
+    padding-bottom: 4.5rem;
+  }
+
+  .back-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+
+  .game-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .game-instruction {
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Bau Cua */
   .bc-board {
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
   }
 
   .bc-cell {
-    padding: 0.8rem;
+    padding: 0.8rem 0.4rem;
+    min-height: 80px;
   }
 
   .bc-emoji {
@@ -1991,6 +2116,7 @@ textarea:focus-visible {
     height: 280px;
   }
 
+  /* Leaderboard */
   .lb-row {
     grid-template-columns: 50px 1fr 80px 60px;
     font-size: 0.8rem;
@@ -2000,26 +2126,121 @@ textarea:focus-visible {
     display: none;
   }
 
+  /* Rewards */
   .rewards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+
+  .reward-card {
+    padding: 0.8rem;
+  }
+
+  .redeem-btn {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+    min-height: 44px;
+  }
+
+  /* Three cultures */
+  .three-cultures-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .culture-values-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 1.2rem;
+    font-size: 0.8rem;
+  }
+
+  .footer-logo {
+    width: 60px;
   }
 }
 
 @media (max-width: 480px) {
   .login-card {
-    padding: 1.5rem;
+    padding: 1.2rem;
   }
 
   .login-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  .login-logo {
+    width: 80px;
+  }
+
+  .login-desc {
+    font-size: 0.8rem;
+  }
+
+  .login-btn {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    min-height: 48px;
+    font-size: 1rem;
   }
 
   .welcome-stats {
-    gap: 1rem;
+    gap: 0.8rem;
   }
 
   .stat-value {
     font-size: 1.2rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+  }
+
+  /* Single column game cards on small phones */
+  .games-grid {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .game-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    text-align: left;
+    padding: 0.8rem;
+    gap: 0 0.8rem;
+  }
+
+  .game-card-emoji {
+    grid-row: 1 / 3;
+    align-self: center;
+    font-size: 2.5rem;
+    margin-bottom: 0;
+  }
+
+  .game-card-title {
+    align-self: end;
+    font-size: 1rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .game-card-desc {
+    font-size: 0.75rem;
+    margin-bottom: 0;
+    -webkit-line-clamp: 1;
+    color: rgba(255, 205, 210, 0.7);
+  }
+
+  .game-card-btn {
+    display: none;
   }
 
   .lixi-envelope {
@@ -2039,6 +2260,11 @@ textarea:focus-visible {
     width: 60px;
     height: 60px;
     font-size: 2rem;
+  }
+
+  /* Rewards single column */
+  .rewards-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -3052,13 +3278,38 @@ textarea:focus-visible {
 
 @media (max-width: 480px) {
   .payment-modal {
-    padding: 1.5rem;
+    padding: 1rem;
+    border-radius: 16px;
+  }
+  .payment-modal h3 {
+    font-size: 1.1rem;
   }
   .payment-method-tabs {
     flex-direction: column;
+    gap: 0.4rem;
+  }
+  .payment-tab {
+    min-height: 48px;
+    font-size: 0.95rem;
+  }
+  .payment-input,
+  .payment-select {
+    min-height: 48px;
+    font-size: 1rem;
+    padding: 0.7rem;
+  }
+  .payment-submit-btn,
+  .payment-cancel-btn {
+    min-height: 48px;
+    font-size: 0.95rem;
+    padding: 0.7rem;
   }
   .receipt-modal {
-    padding: 1.5rem;
+    padding: 1rem;
+  }
+  .receipt-close-btn {
+    min-height: 48px;
+    font-size: 0.95rem;
   }
   .process-steps {
     flex-direction: column;
@@ -3066,6 +3317,15 @@ textarea:focus-visible {
   }
   .process-step-arrow {
     transform: rotate(90deg);
+  }
+  .tier-filters {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tier-btn {
+    min-height: 40px;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
   }
 }
 
@@ -5008,12 +5268,54 @@ textarea:focus-visible {
 }
 
 @media (max-width: 600px) {
-  .ott-choices { gap: 0.6rem; }
-  .ott-choice-btn { padding: 0.8rem 1rem; }
+  /* OTT */
+  .ott-choices { gap: 0.5rem; }
+  .ott-choice-btn { padding: 0.8rem 0.6rem; min-height: 80px; flex: 1; }
   .ott-choice-emoji { font-size: 2rem; }
-  .ds-input-area { flex-direction: column; align-items: center; }
-  .ds-input { width: 100%; max-width: 200px; }
+  .ott-choice-name { font-size: 0.8rem; }
+  .ott-scoreboard { gap: 0.8rem; padding: 0.6rem 1rem; font-size: 0.85rem; }
+  .ott-hand-emoji { font-size: 2rem; }
+
+  /* DoanSo */
+  .ds-input-area { flex-direction: column; align-items: center; gap: 0.5rem; }
+  .ds-input { width: 100%; max-width: 200px; min-height: 48px; font-size: 1.2rem; }
+  .ds-guess-btn { min-height: 48px; padding: 0.7rem 1.5rem; font-size: 1rem; }
+  .ds-guesses { gap: 0.4rem; }
+
+  /* XocDia */
   .xd-coin { font-size: 2rem; width: 50px; height: 50px; }
+
+  /* Quiz buttons */
+  .quiz-option { padding: 0.9rem 0.8rem; min-height: 48px; font-size: 0.85rem; }
+  .quiz-option-letter { width: 26px; height: 26px; font-size: 0.75rem; }
+  .quiz-next-btn { min-height: 48px; }
+  .quiz-question-card { padding: 1rem; }
+  .quiz-summary { padding: 1.5rem 1rem; }
+
+  /* Daily challenge */
+  .daily-challenge-opt { min-height: 44px; }
+
+  /* Generic game action buttons — minimum 48px touch target */
+  .play-btn,
+  .game-action-btn,
+  .lixi-shake-btn,
+  .spin-btn,
+  .tx-roll-btn,
+  .bc-bet-btn,
+  .scratch-btn,
+  .bq-shake-btn,
+  .xam-shake-btn,
+  .cob-flip-btn,
+  .lc-start-btn,
+  .xd-bet-btn {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  /* BauCua bet cells bigger on mobile */
+  .bc-cell {
+    min-height: 70px;
+  }
 }
 
 /* ========== PVP OẲN TÙ TÌ (2 Player) ========== */
@@ -5198,8 +5500,10 @@ textarea:focus-visible {
 @media (max-width: 600px) {
   .pvp-menu-section { padding: 1rem; }
   .pvp-room-number { font-size: 2.5rem; }
-  .pvp-join-input { flex-direction: column; }
-  .pvp-code-input { width: 140px; }
+  .pvp-join-input { flex-direction: column; gap: 0.5rem; }
+  .pvp-code-input { width: 100%; max-width: 200px; min-height: 48px; font-size: 1.2rem; }
+  .pvp-waiting { padding: 1.2rem; margin: 1rem 0; }
+  .pvp-status-box { padding: 1rem; }
 }
 
 /* ========== HƯỚNG DẪN KIẾM XU ========== */
@@ -5321,61 +5625,92 @@ textarea:focus-visible {
 }
 
 @media (max-width: 600px) {
+  .coin-guide {
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+  }
+  .coin-guide-title {
+    font-size: 1.1rem;
+  }
+  .coin-guide-intro {
+    font-size: 0.8rem;
+  }
   .coin-guide-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
-  .coin-guide { padding: 1rem; }
-  .game-wallet-bar { padding: 0.5rem 0.8rem; }
+  .coin-guide-item {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+  }
+  .coin-guide-icon {
+    font-size: 1.2rem;
+  }
+  .coin-guide-tip {
+    font-size: 0.8rem;
+    padding: 0.6rem;
+  }
+  .game-wallet-bar {
+    padding: 0.5rem 0.8rem;
+    gap: 0.5rem;
+  }
   .game-wallet-coins { font-size: 1rem; }
-  .game-wallet-info { gap: 0.8rem; }
+  .game-wallet-plays { font-size: 0.75rem; }
+  .game-wallet-info { gap: 0.6rem; }
+  .game-wallet-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
 }
 
 /* ========== ULTRA-MOBILE RESPONSIVE (≤360px) ========== */
 @media (max-width: 360px) {
   html { font-size: 14px; }
 
-  .header-inner { padding: 0.5rem; gap: 0.3rem; }
-  .header-title { font-size: 1rem; }
-  .header-subtitle { font-size: 0.7rem; }
-  .header-logo-img { width: 28px; height: 28px; }
-  .nav-btn { font-size: 0.7rem; padding: 0.3rem 0.5rem; }
-  .player-name { font-size: 0.75rem; }
+  .header-inner { padding: 0.4rem 0.5rem; gap: 0.25rem; }
+  .header-brand { gap: 0.4rem; }
+  .header-logo-img { width: 28px; }
+  .header-title { font-size: 0.9rem; }
+  .header-subtitle { display: none; }
+  .nav-btn { font-size: 0.7rem; padding: 0.4rem 0.6rem; min-height: 38px; }
+  .player-name { display: none; }
   .player-coins { font-size: 0.75rem; }
 
-  .welcome-banner { padding: 1rem; }
-  .welcome-banner h2 { font-size: 1.2rem; }
-  .welcome-wish { font-size: 0.8rem; }
-  .welcome-stats { gap: 0.5rem; }
-  .stat-value { font-size: 1.2rem; }
-  .stat-label { font-size: 0.65rem; }
+  .main-content { padding: 0.5rem; }
 
-  .games-grid { grid-template-columns: 1fr; gap: 1rem; }
-  .game-card { padding: 1.2rem; }
-  .game-card-emoji { font-size: 2.5rem; }
-  .game-card-title { font-size: 1.1rem; }
-  .game-card-desc { font-size: 0.8rem; }
+  .welcome-banner { padding: 0.8rem; }
+  .welcome-banner h2 { font-size: 1.1rem; }
+  .welcome-wish { font-size: 0.75rem; }
+  .welcome-logo { width: 70px; }
+  .tet-greeting { font-size: 0.8rem; }
 
-  .coin-guide-grid { grid-template-columns: 1fr; }
-  .coin-guide-item { padding: 0.5rem; font-size: 0.8rem; }
+  .game-card { padding: 0.6rem; gap: 0 0.6rem; }
+  .game-card-emoji { font-size: 2rem; }
+  .game-card-title { font-size: 0.9rem; }
 
-  .game-page { padding: 0.5rem; padding-bottom: 4.5rem; }
-  .game-content { padding: 0.5rem; }
+  .coin-guide-grid { grid-template-columns: 1fr; gap: 0.3rem; }
 
-  .game-wallet-bar { padding: 0.4rem 0.6rem; }
-  .game-wallet-coins { font-size: 0.9rem; }
-  .game-wallet-plays { font-size: 0.7rem; }
-  .game-wallet-btn { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+  .game-page { padding: 0 0.3rem; padding-bottom: 4.5rem; }
 
-  .payment-modal { padding: 1rem; max-height: 85vh; }
-  .payment-modal h3 { font-size: 1.1rem; }
+  .game-wallet-bar { padding: 0.4rem 0.5rem; }
+  .game-wallet-coins { font-size: 0.85rem; }
+  .game-wallet-plays { display: none; }
+  .game-wallet-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; min-height: 40px; }
+
+  .payment-modal { padding: 0.8rem; max-height: 90vh; }
 
   .pvp-room-number { font-size: 2rem; }
   .pvp-menu-section h3 { font-size: 1rem; }
 
-  .three-cultures-grid { grid-template-columns: 1fr; }
-  .culture-values-grid { grid-template-columns: 1fr 1fr; }
+  .culture-values-grid { grid-template-columns: 1fr; }
 
-  .footer { padding: 1rem; font-size: 0.75rem; }
+  .footer { padding: 0.8rem; font-size: 0.7rem; }
+  .footer-logo { width: 40px; }
 }
 
 /* ========== LOADING SPINNER ========== */
